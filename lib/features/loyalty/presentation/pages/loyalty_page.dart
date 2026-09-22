@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/loyalty/domain/entities/customer_loyalty_entity.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_event.dart';
@@ -61,23 +62,22 @@ class _CustomersList extends StatelessWidget {
         context.read<LoyaltyBloc>().add(const LoadCustomers());
       },
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: customers.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 8),
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
           final customer = customers[index];
+          final tierColor = _tierColor(context, customer.tier);
           return Card(
             elevation: 0,
             color: theme.colorScheme.surfaceContainerLow,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: _tierColor(customer.tier).withValues(
-                  alpha: 0.12,
-                ),
-                child: Icon(Icons.star, color: _tierColor(customer.tier)),
+                backgroundColor: tierColor.withValues(alpha: 0.12),
+                child: Icon(Icons.star, color: tierColor),
               ),
               title: Text(customer.name),
               subtitle: Text(
@@ -90,7 +90,7 @@ class _CustomersList extends StatelessWidget {
                   Text(
                     '${customer.points} pts',
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: _tierColor(customer.tier),
+                      color: tierColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -114,16 +114,17 @@ class _CustomersList extends StatelessWidget {
     );
   }
 
-  Color _tierColor(LoyaltyTier tier) {
+  Color _tierColor(BuildContext context, LoyaltyTier tier) {
+    final scheme = Theme.of(context).colorScheme;
     switch (tier) {
       case LoyaltyTier.bronze:
         return Colors.brown;
       case LoyaltyTier.silver:
-        return Colors.blueGrey;
+        return scheme.onSurfaceVariant;
       case LoyaltyTier.gold:
-        return Colors.amber;
+        return AppColors.warning;
       case LoyaltyTier.platinum:
-        return Colors.deepPurple;
+        return scheme.primary;
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
+
 /// Reusable executive-style metric card for the financial dashboard.
 class StatCard extends StatelessWidget {
   final String label;
@@ -22,9 +24,11 @@ class StatCard extends StatelessWidget {
     return Card(
       elevation: 0,
       color: theme.colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -52,8 +56,8 @@ class StatCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               value,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: AppTheme.metricDisplay.copyWith(
+                color: theme.colorScheme.onSurface,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

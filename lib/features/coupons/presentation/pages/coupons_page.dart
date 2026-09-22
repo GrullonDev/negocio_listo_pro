@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/coupons/domain/entities/coupon_entity.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_event.dart';
@@ -27,9 +28,8 @@ class CouponsPage extends StatelessWidget {
       body: BlocConsumer<CouponBloc, CouponState>(
         listener: (context, state) {
           if (state is CouponLoaded && state.redeemMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.redeemMessage!)),
-            );
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.redeemMessage!)));
           }
         },
         builder: (context, state) {
@@ -77,18 +77,18 @@ class _CouponsList extends StatelessWidget {
         context.read<CouponBloc>().add(const LoadCoupons());
       },
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: coupons.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 8),
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
           final coupon = coupons[index];
-          final statusColor = _statusColor(coupon);
+          final statusColor = _statusColor(context, coupon);
 
           return Card(
             elevation: 0,
             color: theme.colorScheme.surfaceContainerLow,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: ListTile(
               leading: CircleAvatar(
@@ -120,9 +120,9 @@ class _CouponsList extends StatelessWidget {
         : '\$${coupon.value.toStringAsFixed(2)} de descuento';
   }
 
-  Color _statusColor(CouponEntity coupon) {
-    if (!coupon.isRedeemable) return Colors.red;
-    return Colors.green;
+  Color _statusColor(BuildContext context, CouponEntity coupon) {
+    if (!coupon.isRedeemable) return Theme.of(context).colorScheme.error;
+    return AppColors.success;
   }
 
   String _statusLabel(CouponEntity coupon) {

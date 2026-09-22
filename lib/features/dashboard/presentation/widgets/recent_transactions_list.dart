@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/transaction_entity.dart';
 
 class RecentTransactionsList extends StatelessWidget {
@@ -33,7 +34,7 @@ class RecentTransactionsList extends StatelessWidget {
       itemBuilder: (context, index) {
         final transaction = transactions[index];
         final isIncome = transaction.type == TransactionType.income;
-        final color = isIncome ? Colors.green : Colors.red;
+        final color = isIncome ? AppColors.success : theme.colorScheme.error;
 
         return ListTile(
           contentPadding: EdgeInsets.zero,

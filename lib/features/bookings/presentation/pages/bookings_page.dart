@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/entities/booking_entity.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_event.dart';
@@ -60,26 +61,22 @@ class _BookingsList extends StatelessWidget {
         context.read<BookingBloc>().add(const LoadBookings());
       },
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: bookings.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 8),
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
           final booking = bookings[index];
+          final statusColor = _statusColor(context, booking.status);
           return Card(
             elevation: 0,
             color: theme.colorScheme.surfaceContainerLow,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: _statusColor(booking.status).withValues(
-                  alpha: 0.12,
-                ),
-                child: Icon(
-                  Icons.event_available,
-                  color: _statusColor(booking.status),
-                ),
+                backgroundColor: statusColor.withValues(alpha: 0.12),
+                child: Icon(Icons.event_available, color: statusColor),
               ),
               title: Text(booking.clientName),
               subtitle: Text(
@@ -88,7 +85,7 @@ class _BookingsList extends StatelessWidget {
               trailing: Text(
                 _statusLabel(booking.status),
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: _statusColor(booking.status),
+                  color: statusColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -99,16 +96,16 @@ class _BookingsList extends StatelessWidget {
     );
   }
 
-  Color _statusColor(BookingStatus status) {
+  Color _statusColor(BuildContext context, BookingStatus status) {
     switch (status) {
       case BookingStatus.pending:
-        return Colors.orange;
+        return AppColors.warning;
       case BookingStatus.confirmed:
-        return Colors.blue;
+        return Theme.of(context).colorScheme.primary;
       case BookingStatus.completed:
-        return Colors.green;
+        return AppColors.success;
       case BookingStatus.cancelled:
-        return Colors.red;
+        return Theme.of(context).colorScheme.error;
     }
   }
 

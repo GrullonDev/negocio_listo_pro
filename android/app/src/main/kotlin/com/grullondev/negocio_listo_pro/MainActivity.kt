@@ -1,4 +1,4 @@
-package com.example.negocio_listo_pro
+package com.grullondev.negocio_listo_pro
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -49,3 +49,10 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Flutter generated platform folders ignored for this mobile-only repo
+pubspec.lock
+/linux/
+/macos/
+/windows/
+/web/

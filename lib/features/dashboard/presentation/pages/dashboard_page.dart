@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/financial_metrics_entity.dart';
-import 'package:negocio_listo_pro/features/dashboard/domain/entities/transaction_entity.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/add_transaction_bottom_sheet.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/recent_transactions_list.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/stat_card.dart';
 
@@ -29,24 +29,9 @@ class DashboardPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _addSampleTransaction(context),
+        onPressed: () => AddTransactionBottomSheet.show(context),
         icon: const Icon(Icons.add),
         label: const Text('Nueva transacción'),
-      ),
-    );
-  }
-
-  void _addSampleTransaction(BuildContext context) {
-    final isIncome = DateTime.now().second.isEven;
-    context.read<DashboardBloc>().add(
-      AddDashboardTransaction(
-        TransactionEntity(
-          id: DateTime.now().microsecondsSinceEpoch.toString(),
-          description: isIncome ? 'Venta de prueba' : 'Gasto de prueba',
-          amount: isIncome ? 150.0 : 45.0,
-          type: isIncome ? TransactionType.income : TransactionType.expense,
-          date: DateTime.now(),
-        ),
       ),
     );
   }

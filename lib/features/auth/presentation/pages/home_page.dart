@@ -6,6 +6,9 @@ import 'package:negocio_listo_pro/core/di/injection_container.dart';
 import 'package:negocio_listo_pro/features/auth/domain/entities/user_entity.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_event.dart';
+import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_event.dart';
+import 'package:negocio_listo_pro/features/bookings/presentation/pages/bookings_page.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/pages/dashboard_page.dart';
@@ -29,18 +32,37 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.dashboard),
-          label: const Text('Ver Dashboard Financiero'),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) =>
-                    sl<DashboardBloc>()..add(const LoadDashboardMetrics()),
-                child: const DashboardPage(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton.icon(
+              icon: const Icon(Icons.dashboard),
+              label: const Text('Ver Dashboard Financiero'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) => sl<DashboardBloc>()
+                      ..add(const LoadDashboardMetrics()),
+                    child: const DashboardPage(),
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.event_note),
+              label: const Text('Ver Citas y Pedidos'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) =>
+                        sl<BookingBloc>()..add(const LoadBookings()),
+                    child: const BookingsPage(),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

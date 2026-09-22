@@ -12,6 +12,13 @@ import 'package:negocio_listo_pro/features/auth/domain/usecases/get_current_sess
 import 'package:negocio_listo_pro/features/auth/domain/usecases/login_usecase.dart';
 import 'package:negocio_listo_pro/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:negocio_listo_pro/features/bookings/data/datasources/booking_local_datasource.dart';
+import 'package:negocio_listo_pro/features/bookings/data/models/booking_model.dart';
+import 'package:negocio_listo_pro/features/bookings/data/repositories/booking_repository_impl.dart';
+import 'package:negocio_listo_pro/features/bookings/domain/repositories/booking_repository.dart';
+import 'package:negocio_listo_pro/features/bookings/domain/usecases/add_booking_usecase.dart';
+import 'package:negocio_listo_pro/features/bookings/domain/usecases/get_bookings_usecase.dart';
+import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/models/transaction_model.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/repositories/dashboard_repository_impl.dart';
@@ -30,6 +37,7 @@ Future<void> initDependencyInjection() async {
     UserModelSchema,
     CredentialModelSchema,
     TransactionModelSchema,
+    BookingModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
@@ -68,6 +76,19 @@ Future<void> initDependencyInjection() async {
       getDashboardMetricsUseCase: sl(),
       addTransactionUseCase: sl(),
     ),
+  );
+
+  sl.registerLazySingleton<BookingLocalDataSource>(
+    () => BookingLocalDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(localDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => GetBookingsUseCase(sl()));
+  sl.registerLazySingleton(() => AddBookingUseCase(sl()));
+
+  sl.registerFactory(
+    () => BookingBloc(getBookingsUseCase: sl(), addBookingUseCase: sl()),
   );
 }
 

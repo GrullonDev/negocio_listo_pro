@@ -19,6 +19,14 @@ import 'package:negocio_listo_pro/features/bookings/domain/repositories/booking_
 import 'package:negocio_listo_pro/features/bookings/domain/usecases/add_booking_usecase.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/usecases/get_bookings_usecase.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:negocio_listo_pro/features/coupons/data/datasources/coupon_local_datasource.dart';
+import 'package:negocio_listo_pro/features/coupons/data/models/coupon_model.dart';
+import 'package:negocio_listo_pro/features/coupons/data/repositories/coupon_repository_impl.dart';
+import 'package:negocio_listo_pro/features/coupons/domain/repositories/coupon_repository.dart';
+import 'package:negocio_listo_pro/features/coupons/domain/usecases/create_coupon_usecase.dart';
+import 'package:negocio_listo_pro/features/coupons/domain/usecases/get_coupons_usecase.dart';
+import 'package:negocio_listo_pro/features/coupons/domain/usecases/redeem_coupon_usecase.dart';
+import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/models/transaction_model.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/repositories/dashboard_repository_impl.dart';
@@ -47,6 +55,7 @@ Future<void> initDependencyInjection() async {
     TransactionModelSchema,
     BookingModelSchema,
     CustomerModelSchema,
+    CouponModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
@@ -115,6 +124,24 @@ Future<void> initDependencyInjection() async {
       getCustomersUseCase: sl(),
       addCustomerUseCase: sl(),
       addPointsToCustomerUseCase: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<CouponLocalDataSource>(
+    () => CouponLocalDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<CouponRepository>(
+    () => CouponRepositoryImpl(localDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => GetCouponsUseCase(sl()));
+  sl.registerLazySingleton(() => CreateCouponUseCase(sl()));
+  sl.registerLazySingleton(() => RedeemCouponUseCase(sl()));
+
+  sl.registerFactory(
+    () => CouponBloc(
+      getCouponsUseCase: sl(),
+      createCouponUseCase: sl(),
+      redeemCouponUseCase: sl(),
     ),
   );
 }

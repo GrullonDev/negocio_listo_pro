@@ -18,3 +18,21 @@ class ServerFailure extends Failure {
 class AuthFailure extends Failure {
   const AuthFailure([super.message = 'Credenciales inválidas']);
 }
+
+class CouponNotFoundFailure extends Failure {
+  const CouponNotFoundFailure([super.message = 'Cupón no encontrado']);
+}
+
+class CouponInactiveFailure extends Failure {
+  const CouponInactiveFailure([super.message = 'El cupón está inactivo']);
+}
+
+class CouponExpiredFailure extends Failure {
+  const CouponExpiredFailure([super.message = 'El cupón ha expirado']);
+}
+
+class CouponExhaustedFailure extends Failure {
+  const CouponExhaustedFailure([
+    super.message = 'El cupón alcanzó su límite de usos',
+  ]);
+}

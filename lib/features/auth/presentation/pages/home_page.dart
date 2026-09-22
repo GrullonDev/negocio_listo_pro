@@ -9,6 +9,9 @@ import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_event.dar
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_event.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/pages/bookings_page.dart';
+import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
+import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_event.dart';
+import 'package:negocio_listo_pro/features/coupons/presentation/pages/coupons_page.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/pages/dashboard_page.dart';
@@ -75,6 +78,19 @@ class HomePage extends StatelessWidget {
                     create: (_) =>
                         sl<LoyaltyBloc>()..add(const LoadCustomers()),
                     child: const LoyaltyPage(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.local_offer),
+              label: const Text('Cupones de Descuento'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) => sl<CouponBloc>()..add(const LoadCoupons()),
+                    child: const CouponsPage(),
                   ),
                 ),
               ),

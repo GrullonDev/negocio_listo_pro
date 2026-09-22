@@ -14,8 +14,7 @@ class RedeemCouponParams {
 /// Valida vigencia, estado activo y usos disponibles antes de canjear.
 /// La regla de negocio se aplica de forma atómica en el datasource local
 /// (Isar `writeTxn`), que es la fuente de verdad transaccional.
-class RedeemCouponUseCase
-    implements UseCase<CouponEntity, RedeemCouponParams> {
+class RedeemCouponUseCase implements UseCase<CouponEntity, RedeemCouponParams> {
   final CouponRepository repository;
 
   const RedeemCouponUseCase(this.repository);

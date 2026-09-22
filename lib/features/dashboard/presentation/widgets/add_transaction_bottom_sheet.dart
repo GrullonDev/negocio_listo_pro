@@ -28,8 +28,7 @@ class AddTransactionBottomSheet extends StatefulWidget {
       _AddTransactionBottomSheetState();
 }
 
-class _AddTransactionBottomSheetState
-    extends State<AddTransactionBottomSheet> {
+class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();

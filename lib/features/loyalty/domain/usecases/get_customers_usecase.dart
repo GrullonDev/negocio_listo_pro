@@ -12,9 +12,7 @@ class GetCustomersUseCase
   const GetCustomersUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<CustomerLoyaltyEntity>>> call(
-    NoParams params,
-  ) {
+  Future<Either<Failure, List<CustomerLoyaltyEntity>>> call(NoParams params) {
     return repository.getCustomers();
   }
 }

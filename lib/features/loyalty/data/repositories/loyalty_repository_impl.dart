@@ -38,10 +38,7 @@ class LoyaltyRepositoryImpl implements LoyaltyRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addPoints(
-    String customerId,
-    int points,
-  ) async {
+  Future<Either<Failure, void>> addPoints(String customerId, int points) async {
     try {
       await localDataSource.addPoints(customerId, points);
       return const Right(null);

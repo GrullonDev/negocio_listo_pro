@@ -23,8 +23,7 @@ class AddCustomerBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<AddCustomerBottomSheet> createState() =>
-      _AddCustomerBottomSheetState();
+  State<AddCustomerBottomSheet> createState() => _AddCustomerBottomSheetState();
 }
 
 class _AddCustomerBottomSheetState extends State<AddCustomerBottomSheet> {

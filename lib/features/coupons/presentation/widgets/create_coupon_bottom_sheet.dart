@@ -150,8 +150,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
                 if (parsed == null || parsed <= 0) {
                   return 'Ingresa un valor válido';
                 }
-                if (_discountType == DiscountType.percentage &&
-                    parsed > 100) {
+                if (_discountType == DiscountType.percentage && parsed > 100) {
                   return 'El porcentaje no puede superar 100';
                 }
                 return null;

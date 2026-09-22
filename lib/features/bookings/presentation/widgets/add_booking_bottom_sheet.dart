@@ -115,9 +115,7 @@ class _AddBookingBottomSheetState extends State<AddBookingBottomSheet> {
                 side: BorderSide(color: Theme.of(context).colorScheme.outline),
               ),
               leading: const Icon(Icons.event),
-              title: Text(
-                '${_date.day}/${_date.month}/${_date.year}',
-              ),
+              title: Text('${_date.day}/${_date.month}/${_date.year}'),
               onTap: _pickDate,
             ),
             const SizedBox(height: 20),

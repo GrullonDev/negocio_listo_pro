@@ -43,9 +43,20 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build/
 
 # Widget Preview related
 .widget_preview/
 
+# DevTools local settings
+devtools_options.yaml
+
 # FVM Version Cache
 .fvm/
+
+# Flutter generated platform folders ignored for this mobile-only repo
+pubspec.lock
+/linux/
+/macos/
+/windows/
+/web/

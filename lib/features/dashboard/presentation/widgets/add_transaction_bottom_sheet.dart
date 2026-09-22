@@ -12,10 +12,14 @@ class AddTransactionBottomSheet extends StatefulWidget {
   const AddTransactionBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    final dashboardBloc = context.read<DashboardBloc>();
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => const AddTransactionBottomSheet(),
+      builder: (_) => BlocProvider.value(
+        value: dashboardBloc,
+        child: const AddTransactionBottomSheet(),
+      ),
     );
   }
 

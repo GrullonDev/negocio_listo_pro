@@ -11,10 +11,14 @@ class AddCustomerBottomSheet extends StatefulWidget {
   const AddCustomerBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    final loyaltyBloc = context.read<LoyaltyBloc>();
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => const AddCustomerBottomSheet(),
+      builder: (_) => BlocProvider.value(
+        value: loyaltyBloc,
+        child: const AddCustomerBottomSheet(),
+      ),
     );
   }
 

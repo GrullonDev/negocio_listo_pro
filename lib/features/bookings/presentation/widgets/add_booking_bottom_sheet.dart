@@ -11,10 +11,14 @@ class AddBookingBottomSheet extends StatefulWidget {
   const AddBookingBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    final bookingBloc = context.read<BookingBloc>();
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => const AddBookingBottomSheet(),
+      builder: (_) => BlocProvider.value(
+        value: bookingBloc,
+        child: const AddBookingBottomSheet(),
+      ),
     );
   }
 

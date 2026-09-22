@@ -21,11 +21,15 @@ class AddPointsDialog extends StatefulWidget {
     required String customerId,
     required String customerName,
   }) {
+    final loyaltyBloc = context.read<LoyaltyBloc>();
     return showDialog<void>(
       context: context,
-      builder: (_) => AddPointsDialog(
-        customerId: customerId,
-        customerName: customerName,
+      builder: (_) => BlocProvider.value(
+        value: loyaltyBloc,
+        child: AddPointsDialog(
+          customerId: customerId,
+          customerName: customerName,
+        ),
       ),
     );
   }

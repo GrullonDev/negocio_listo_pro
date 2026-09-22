@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:negocio_listo_pro/core/errors/failures.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/user_model.dart';
 

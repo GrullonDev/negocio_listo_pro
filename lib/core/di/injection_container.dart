@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:negocio_listo_pro/core/network/network_info.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_remote_datasource.dart';

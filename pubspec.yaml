@@ -18,12 +18,12 @@ dependencies:
   dartz: ^0.10.1 # Para Programación Funcional (Either para manejo de errores)
 
   # Almacenamiento Local Offline-First
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
+  isar_community: ^3.3.2
+  isar_community_flutter_libs: ^3.3.2
   path_provider: ^2.1.1
 
   # Conectividad y Red
-  connectivity_plus: ^5.0.2
+  connectivity_plus: ^7.3.1
   dio: ^5.4.0
 
 dev_dependencies:
@@ -31,7 +31,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^3.0.0
-  isar_generator: ^3.1.0+1
+  isar_community_generator: ^3.3.2
   build_runner: ^2.4.8
 
 flutter:

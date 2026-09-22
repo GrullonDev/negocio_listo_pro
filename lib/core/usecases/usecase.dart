@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+
 import 'package:negocio_listo_pro/core/errors/failures.dart';
 
 /// Contract for every use case: [Success] is the success payload,

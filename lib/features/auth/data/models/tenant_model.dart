@@ -1,4 +1,5 @@
 import 'package:isar_community/isar.dart';
+
 import 'package:negocio_listo_pro/features/auth/domain/entities/tenant_entity.dart';
 
 part 'tenant_model.g.dart';

@@ -12,6 +12,9 @@ import 'package:negocio_listo_pro/features/bookings/presentation/pages/bookings_
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
+import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_event.dart';
+import 'package:negocio_listo_pro/features/loyalty/presentation/pages/loyalty_page.dart';
 
 class HomePage extends StatelessWidget {
   final UserEntity user;
@@ -58,6 +61,20 @@ class HomePage extends StatelessWidget {
                     create: (_) =>
                         sl<BookingBloc>()..add(const LoadBookings()),
                     child: const BookingsPage(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.loyalty),
+              label: const Text('Clientes Fidelizados'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) =>
+                        sl<LoyaltyBloc>()..add(const LoadCustomers()),
+                    child: const LoyaltyPage(),
                   ),
                 ),
               ),

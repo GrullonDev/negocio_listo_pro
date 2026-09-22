@@ -26,6 +26,14 @@ import 'package:negocio_listo_pro/features/dashboard/domain/repositories/dashboa
 import 'package:negocio_listo_pro/features/dashboard/domain/usecases/add_transaction_usecase.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/usecases/get_dashboard_metrics_usecase.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:negocio_listo_pro/features/loyalty/data/datasources/loyalty_local_datasource.dart';
+import 'package:negocio_listo_pro/features/loyalty/data/models/customer_model.dart';
+import 'package:negocio_listo_pro/features/loyalty/data/repositories/loyalty_repository_impl.dart';
+import 'package:negocio_listo_pro/features/loyalty/domain/repositories/loyalty_repository.dart';
+import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_customer_usecase.dart';
+import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_points_to_customer_usecase.dart';
+import 'package:negocio_listo_pro/features/loyalty/domain/usecases/get_customers_usecase.dart';
+import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -38,6 +46,7 @@ Future<void> initDependencyInjection() async {
     CredentialModelSchema,
     TransactionModelSchema,
     BookingModelSchema,
+    CustomerModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
@@ -89,6 +98,24 @@ Future<void> initDependencyInjection() async {
 
   sl.registerFactory(
     () => BookingBloc(getBookingsUseCase: sl(), addBookingUseCase: sl()),
+  );
+
+  sl.registerLazySingleton<LoyaltyLocalDataSource>(
+    () => LoyaltyLocalDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<LoyaltyRepository>(
+    () => LoyaltyRepositoryImpl(localDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => GetCustomersUseCase(sl()));
+  sl.registerLazySingleton(() => AddCustomerUseCase(sl()));
+  sl.registerLazySingleton(() => AddPointsToCustomerUseCase(sl()));
+
+  sl.registerFactory(
+    () => LoyaltyBloc(
+      getCustomersUseCase: sl(),
+      addCustomerUseCase: sl(),
+      addPointsToCustomerUseCase: sl(),
+    ),
   );
 }
 

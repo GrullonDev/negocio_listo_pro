@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/branding/brand_config.dart';
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/financial_metrics_entity.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -58,21 +59,23 @@ class _DashboardContent extends StatelessWidget {
             children: [
               StatCard(
                 label: 'Ingresos Totales',
-                value: '\$${metrics.totalIncome.toStringAsFixed(2)}',
+                value: BrandConfig.current.formatMoney(metrics.totalIncome),
                 icon: Icons.trending_up,
                 color: AppColors.success,
               ),
               StatCard(
                 label: 'Gastos Totales',
-                value: '\$${metrics.totalExpenses.toStringAsFixed(2)}',
+                value: BrandConfig.current.formatMoney(metrics.totalExpenses),
                 icon: Icons.trending_down,
                 color: theme.colorScheme.error,
               ),
               StatCard(
                 label: 'Balance Neto',
-                value: '\$${metrics.netBalance.toStringAsFixed(2)}',
+                value: BrandConfig.current.formatMoney(metrics.netBalance),
                 icon: Icons.account_balance_wallet,
-                color: isPositive ? theme.colorScheme.primary : AppColors.warning,
+                color: isPositive
+                    ? theme.colorScheme.primary
+                    : AppColors.warning,
               ),
               StatCard(
                 label: 'Órdenes Registradas',
@@ -86,12 +89,12 @@ class _DashboardContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Movimientos recientes',
-                style: theme.textTheme.titleMedium,
-              ),
+              Text('Movimientos recientes', style: theme.textTheme.titleMedium),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -170,7 +173,10 @@ class _BalanceHeroCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: scheme.onPrimary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -198,7 +204,7 @@ class _BalanceHeroCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            '\$${metrics.netBalance.toStringAsFixed(2)}',
+            BrandConfig.current.formatMoney(metrics.netBalance),
             style: AppTheme.metricDisplay.copyWith(
               color: scheme.onPrimary,
               fontSize: 34,
@@ -293,7 +299,9 @@ class _HeroMetric extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          isCount ? value.toStringAsFixed(0) : '\$${value.toStringAsFixed(2)}',
+          isCount
+              ? value.toStringAsFixed(0)
+              : BrandConfig.current.formatMoney(value),
           style: theme.textTheme.titleMedium?.copyWith(
             color: onPrimary,
             fontWeight: FontWeight.w700,

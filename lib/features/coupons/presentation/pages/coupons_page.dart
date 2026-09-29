@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/branding/brand_config.dart';
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/coupons/domain/entities/coupon_entity.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
@@ -85,7 +86,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
   String _discountLabel(CouponEntity coupon) {
     return coupon.discountType == DiscountType.percentage
         ? '-${coupon.value.toStringAsFixed(0)}% de descuento'
-        : '-\$${coupon.value.toStringAsFixed(2)} de descuento';
+        : '-${BrandConfig.current.formatMoney(coupon.value)} de descuento';
   }
 
   String _statusLabel(CouponEntity coupon) {
@@ -105,7 +106,10 @@ class _CouponsScreenState extends State<_CouponsScreen> {
     final theme = Theme.of(context);
     final coupons = widget.coupons;
     final activeCount = coupons.where((c) => c.isRedeemable).length;
-    final totalRedemptions = coupons.fold<int>(0, (sum, c) => sum + c.currentUses);
+    final totalRedemptions = coupons.fold<int>(
+      0,
+      (sum, c) => sum + c.currentUses,
+    );
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -134,7 +138,10 @@ class _CouponsScreenState extends State<_CouponsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Validar y Canjear en Caja', style: theme.textTheme.titleMedium),
+                  Text(
+                    'Validar y Canjear en Caja',
+                    style: theme.textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     'Ingresa el código del cupón del cliente',
@@ -152,7 +159,9 @@ class _CouponsScreenState extends State<_CouponsScreen> {
                           onSubmitted: (_) => _verify(),
                           decoration: InputDecoration(
                             hintText: 'PROMO20',
-                            prefixIcon: const Icon(Icons.confirmation_number_outlined),
+                            prefixIcon: const Icon(
+                              Icons.confirmation_number_outlined,
+                            ),
                             filled: true,
                             fillColor: theme.colorScheme.surfaceContainerLow,
                             border: OutlineInputBorder(
@@ -168,6 +177,10 @@ class _CouponsScreenState extends State<_CouponsScreen> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       FilledButton(
+                        // The theme's full-width minimumSize breaks inside a Row.
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 48),
+                        ),
                         onPressed: _verify,
                         child: const Text('Verificar'),
                       ),
@@ -190,7 +203,9 @@ class _CouponsScreenState extends State<_CouponsScreen> {
             const SizedBox(height: AppSpacing.md),
             _VerifyResultCard(
               coupon: _verifiedCoupon,
-              discountLabel: _verifiedCoupon != null ? _discountLabel(_verifiedCoupon!) : '',
+              discountLabel: _verifiedCoupon != null
+                  ? _discountLabel(_verifiedCoupon!)
+                  : '',
               onRedeem: _redeemVerified,
             ),
           ],
@@ -312,6 +327,7 @@ class _SummaryCard extends StatelessWidget {
               ),
               const Spacer(),
               FilledButton.icon(
+                style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
                 onPressed: onNewCampaign,
                 icon: const Icon(Icons.add, size: 18),
                 label: const Text('Nueva Campaña'),
@@ -367,15 +383,20 @@ class _VerifyResultCard extends StatelessWidget {
     }
 
     final redeemable = c.isRedeemable;
-    final bg = redeemable ? AppColors.successContainer : AppColors.dangerContainer;
-    final fg = redeemable ? AppColors.onSuccessContainer : AppColors.onDangerContainer;
+    final bg = redeemable
+        ? AppColors.successContainer
+        : AppColors.dangerContainer;
+    final fg = redeemable
+        ? AppColors.onSuccessContainer
+        : AppColors.onDangerContainer;
 
     String reason = 'Válido para canjear';
     if (!redeemable) {
       if (!c.isActive) {
         reason = 'Este cupón está inactivo';
       } else if (c.isExpired) {
-        reason = 'Este cupón expiró el '
+        reason =
+            'Este cupón expiró el '
             '${c.expirationDate.day}/${c.expirationDate.month}/${c.expirationDate.year}';
       } else if (!c.hasUsesLeft) {
         reason = 'Este cupón ya alcanzó su límite de usos';
@@ -499,7 +520,11 @@ class _CampaignCard extends StatelessWidget {
                     color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(AppRadius.dm),
                   ),
-                  child: Icon(Icons.local_offer_outlined, color: statusColor, size: 20),
+                  child: Icon(
+                    Icons.local_offer_outlined,
+                    color: statusColor,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -522,7 +547,10 @@ class _CampaignCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(AppRadius.full),

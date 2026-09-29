@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:negocio_listo_pro/core/branding/brand_config.dart';
+
 /// Design tokens extraídos de `assets/design/DESIGN.md`. Sirven como fuente
 /// única de verdad para colores que no forman parte del [ColorScheme] de
 /// Material (estados de cupón/fidelización, pills de status, etc.).
@@ -171,8 +173,17 @@ abstract final class AppTheme {
     letterSpacing: -0.03 * 28,
   );
 
-  static ThemeData get light {
-    const scheme = _lightScheme;
+  static ThemeData get light => forBrand(BrandConfig.house);
+
+  /// Same design system, recolored with the client's identity: only the
+  /// brand-bearing roles change, so every screen adapts automatically.
+  static ThemeData forBrand(BrandConfig brand) {
+    final scheme = _lightScheme.copyWith(
+      primary: brand.primary,
+      primaryContainer: brand.primaryContainer,
+      secondary: brand.secondary,
+      surfaceTint: brand.primary,
+    );
     final textTheme = _textTheme(scheme);
 
     return ThemeData(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:negocio_listo_pro/core/branding/brand_config.dart';
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/transaction_entity.dart';
 
@@ -78,7 +79,7 @@ class RecentTransactionsList extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                '${isIncome ? '+' : '-'}\$${transaction.amount.toStringAsFixed(2)}',
+                '${isIncome ? '+' : '-'}${BrandConfig.current.formatMoney(transaction.amount)}',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: color,
                   fontWeight: FontWeight.w700,

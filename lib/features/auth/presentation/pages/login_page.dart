@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/branding/brand_config.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_event.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_state.dart';
@@ -26,8 +27,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final brand = BrandConfig.current;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('NegocioListo Pro')),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthFailureState) {
@@ -40,6 +43,30 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              CircleAvatar(
+                radius: 36,
+                backgroundColor: theme.colorScheme.primary,
+                child: Text(
+                  brand.businessName.substring(0, 1).toUpperCase(),
+                  style: theme.textTheme.displayLarge?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                brand.businessName,
+                style: theme.textTheme.headlineLarge,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                brand.tagline,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.secondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Correo'),

@@ -8,4 +8,8 @@ import 'package:negocio_listo_pro/features/bookings/domain/entities/booking_enti
 abstract class BookingRepository {
   Future<Either<Failure, List<BookingEntity>>> getBookings();
   Future<Either<Failure, void>> addBooking(BookingEntity booking);
+  Future<Either<Failure, void>> updateBookingStatus(
+    String bookingId,
+    BookingStatus status,
+  );
 }

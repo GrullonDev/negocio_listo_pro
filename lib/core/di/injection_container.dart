@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:negocio_listo_pro/core/demo/demo_seeder.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/credential_model.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/tenant_model.dart';
@@ -18,6 +19,7 @@ import 'package:negocio_listo_pro/features/bookings/data/repositories/booking_re
 import 'package:negocio_listo_pro/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/usecases/add_booking_usecase.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/usecases/get_bookings_usecase.dart';
+import 'package:negocio_listo_pro/features/bookings/domain/usecases/update_booking_status_usecase.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/coupons/data/datasources/coupon_local_datasource.dart';
 import 'package:negocio_listo_pro/features/coupons/data/models/coupon_model.dart';
@@ -60,6 +62,7 @@ Future<void> initDependencyInjection() async {
   sl.registerSingleton<Isar>(isar);
 
   await _seedDemoCredentials(isar);
+  await DemoSeeder(isar).run();
 
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(sl()),
@@ -104,9 +107,14 @@ Future<void> initDependencyInjection() async {
   );
   sl.registerLazySingleton(() => GetBookingsUseCase(sl()));
   sl.registerLazySingleton(() => AddBookingUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateBookingStatusUseCase(sl()));
 
   sl.registerFactory(
-    () => BookingBloc(getBookingsUseCase: sl(), addBookingUseCase: sl()),
+    () => BookingBloc(
+      getBookingsUseCase: sl(),
+      addBookingUseCase: sl(),
+      updateBookingStatusUseCase: sl(),
+    ),
   );
 
   sl.registerLazySingleton<LoyaltyLocalDataSource>(

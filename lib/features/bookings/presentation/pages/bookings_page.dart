@@ -54,16 +54,25 @@ class _BookingsScreen extends StatelessWidget {
   });
 
   static const _monthNames = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
   ];
 
   List<BookingEntity> _bookingsOn(DateTime day) {
     return bookings.where((b) {
       final d = b.date;
       return d.year == day.year && d.month == day.month && d.day == day.day;
-    }).toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
+    }).toList()..sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
@@ -203,12 +212,20 @@ class _BookingsScreen extends StatelessWidget {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   String _weekdayLabel(int weekday) {
     const labels = [
-      'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
     ];
     return labels[weekday - 1];
   }
@@ -275,7 +292,9 @@ class _WeekStrip extends StatelessWidget {
                       Text(
                         '${day.day}',
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: isSelected ? scheme.onPrimary : scheme.onSurface,
+                          color: isSelected
+                              ? scheme.onPrimary
+                              : scheme.onSurface,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -480,76 +499,156 @@ class _BookingTimelineTile extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 side: BorderSide(
-                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  color: theme.colorScheme.outlineVariant.withValues(
+                    alpha: 0.5,
+                  ),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm + 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: color.withValues(alpha: 0.12),
-                          child: Text(
-                            _initials(),
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: color,
-                              fontWeight: FontWeight.w700,
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: () => _BookingStatusSheet.show(context, booking),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.sm + 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: color.withValues(alpha: 0.12),
+                            child: Text(
+                              _initials(),
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: color,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                booking.clientName,
-                                style: theme.textTheme.titleMedium,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                booking.service,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  booking.clientName,
+                                  style: theme.textTheme.titleMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(AppRadius.full),
-                          ),
-                          child: Text(
-                            _statusLabel(),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: color,
-                              fontWeight: FontWeight.w600,
+                                Text(
+                                  booking.service,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(width: AppSpacing.sm),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: color.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.full,
+                              ),
+                            ),
+                            child: Text(
+                              _statusLabel(),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: color,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Lets the operator move a booking through its lifecycle
+/// (por confirmar → confirmada → completada / cancelada) with one tap.
+class _BookingStatusSheet extends StatelessWidget {
+  final BookingEntity booking;
+
+  const _BookingStatusSheet({required this.booking});
+
+  static Future<void> show(BuildContext context, BookingEntity booking) {
+    final bloc = context.read<BookingBloc>();
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) => BlocProvider.value(
+        value: bloc,
+        child: _BookingStatusSheet(booking: booking),
+      ),
+    );
+  }
+
+  static const _options = [
+    (BookingStatus.pending, 'Por confirmar', Icons.schedule),
+    (BookingStatus.confirmed, 'Confirmada', Icons.event_available),
+    (BookingStatus.completed, 'Completada', Icons.check_circle),
+    (BookingStatus.cancelled, 'Cancelada', Icons.cancel),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          AppSpacing.md,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(booking.clientName, style: theme.textTheme.headlineSmall),
+            Text(booking.service, style: theme.textTheme.bodySmall),
+            const SizedBox(height: AppSpacing.md),
+            for (final (status, label, icon) in _options)
+              ListTile(
+                leading: Icon(icon),
+                title: Text(label),
+                selected: booking.status == status,
+                trailing: booking.status == status
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () {
+                  if (booking.status != status) {
+                    context.read<BookingBloc>().add(
+                      UpdateBookingStatusRequested(
+                        bookingId: booking.id,
+                        status: status,
+                      ),
+                    );
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+          ],
+        ),
       ),
     );
   }

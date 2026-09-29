@@ -34,4 +34,19 @@ class BookingRepositoryImpl implements BookingRepository {
       return const Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateBookingStatus(
+    String bookingId,
+    BookingStatus status,
+  ) async {
+    try {
+      await localDataSource.updateStatus(bookingId, status);
+      return const Right(null);
+    } on Failure catch (failure) {
+      return Left(failure);
+    } catch (_) {
+      return const Left(CacheFailure());
+    }
+  }
 }

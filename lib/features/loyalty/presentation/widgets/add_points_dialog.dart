@@ -86,7 +86,11 @@ class _AddPointsDialogState extends State<AddPointsDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
-        FilledButton(onPressed: _submit, child: const Text('Guardar')),
+        FilledButton(
+          style: FilledButton.styleFrom(minimumSize: const Size(64, 40)),
+          onPressed: _submit,
+          child: const Text('Guardar'),
+        ),
       ],
     );
   }

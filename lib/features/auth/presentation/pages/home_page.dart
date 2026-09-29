@@ -34,10 +34,18 @@ class _NavTab {
 }
 
 const _tabs = [
-  _NavTab(label: 'Dashboard', icon: Icons.dashboard, title: 'Dashboard Financiero'),
+  _NavTab(
+    label: 'Dashboard',
+    icon: Icons.dashboard,
+    title: 'Dashboard Financiero',
+  ),
   _NavTab(label: 'Citas', icon: Icons.event_note, title: 'Citas y Pedidos'),
   _NavTab(label: 'Clientes', icon: Icons.people, title: 'Clientes Fidelizados'),
-  _NavTab(label: 'Cupones', icon: Icons.local_offer, title: 'Cupones de Descuento'),
+  _NavTab(
+    label: 'Cupones',
+    icon: Icons.local_offer,
+    title: 'Cupones de Descuento',
+  ),
 ];
 
 class HomePage extends StatefulWidget {
@@ -169,9 +177,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 2),
               Text(
                 tab.label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
-                ),
+                style: Theme.of(context).textTheme.labelSmall
+                    ?.copyWith(color: color),
               ),
             ],
           ),

@@ -68,7 +68,11 @@ class _RedeemCouponDialogState extends State<RedeemCouponDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
-        FilledButton(onPressed: _submit, child: const Text('Canjear')),
+        FilledButton(
+          style: FilledButton.styleFrom(minimumSize: const Size(64, 40)),
+          onPressed: _submit,
+          child: const Text('Canjear'),
+        ),
       ],
     );
   }

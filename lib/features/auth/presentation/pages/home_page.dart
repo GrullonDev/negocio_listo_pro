@@ -23,6 +23,7 @@ import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/add_tr
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_event.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/pages/loyalty_page.dart';
+import 'package:negocio_listo_pro/core/theme/responsive.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/widgets/add_customer_bottom_sheet.dart';
 
 class _NavTab {
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                   icon: const Icon(Icons.qr_code_scanner),
                   tooltip: 'Canjear cupón',
-                  onPressed: () => RedeemCouponDialog.show(context),
+                  onPressed: () => RedeemCouponDialog.scanAndShow(context),
                 ),
               IconButton(
                 icon: const Icon(Icons.logout),
@@ -123,14 +124,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          body: IndexedStack(
-            index: _currentIndex,
-            children: const [
-              DashboardPage(),
-              BookingsPage(),
-              LoyaltyPage(),
-              CouponsPage(),
-            ],
+          body: ResponsiveCenter(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: const [
+                DashboardPage(),
+                BookingsPage(),
+                LoyaltyPage(),
+                CouponsPage(),
+              ],
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => _onAddPressed(context),
@@ -175,10 +178,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               Icon(tab.icon, color: color),
               const SizedBox(height: AppSpacing.xxs),
-              Text(
-                tab.label,
-                style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: color),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  tab.label,
+                  maxLines: 1,
+                  style: Theme.of(context).textTheme.labelSmall
+                      ?.copyWith(color: color),
+                ),
               ),
             ],
           ),

@@ -8,7 +8,8 @@ import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_event.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_state.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/widgets/create_coupon_bottom_sheet.dart';
-import 'package:negocio_listo_pro/features/coupons/presentation/widgets/redeem_coupon_dialog.dart';
+import 'package:negocio_listo_pro/core/theme/responsive.dart';
+import 'package:negocio_listo_pro/features/coupons/presentation/pages/scan_coupon_page.dart';
 
 class CouponsPage extends StatelessWidget {
   const CouponsPage({super.key});
@@ -53,6 +54,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
   @override
   void dispose() {
     _codeController.dispose();
+    _codeFocus.dispose();
     super.dispose();
   }
 
@@ -70,6 +72,21 @@ class _CouponsScreenState extends State<_CouponsScreen> {
       _verifiedCoupon = match;
       _searched = true;
     });
+  }
+
+  final _codeFocus = FocusNode();
+
+  /// Escanea el QR y lo valida en la tarjeta de verificación, para que el
+  /// cajero confirme el canje antes de aplicarlo.
+  Future<void> _scanAndVerify() async {
+    final code = await ScanCouponPage.scan(context);
+    if (!mounted || code == null) return;
+    if (code == ScanCouponPage.manualEntry) {
+      _codeFocus.requestFocus();
+      return;
+    }
+    _codeController.text = code;
+    _verify();
   }
 
   void _redeemVerified() {
@@ -116,7 +133,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
         context.read<CouponBloc>().add(const LoadCoupons());
       },
       child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: context.pagePadding,
         children: [
           _SummaryCard(
             activeCount: activeCount,
@@ -155,6 +172,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
                       Expanded(
                         child: TextField(
                           controller: _codeController,
+                          focusNode: _codeFocus,
                           textCapitalization: TextCapitalization.characters,
                           onSubmitted: (_) => _verify(),
                           decoration: InputDecoration(
@@ -190,7 +208,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => RedeemCouponDialog.show(context),
+                      onPressed: _scanAndVerify,
                       icon: const Icon(Icons.qr_code_scanner),
                       label: const Text('Escanear Cupón QR de Cliente'),
                     ),
@@ -213,7 +231,12 @@ class _CouponsScreenState extends State<_CouponsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Campañas Vigentes', style: theme.textTheme.titleMedium),
+              Expanded(
+                child: Text(
+                  'Campañas Vigentes',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
               Text(
                 '${coupons.length} disponibles',
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -283,14 +306,18 @@ class _SummaryCard extends StatelessWidget {
             children: [
               Icon(Icons.local_offer, size: 16, color: scheme.primary),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                'CUPONES ACTIVOS',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  letterSpacing: 1,
+              Expanded(
+                child: Text(
+                  'CUPONES ACTIVOS',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -311,24 +338,35 @@ class _SummaryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          // Wrap: en pantallas angostas el botón baja a su propia línea.
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: [
-              Text(
-                '$activeCount',
-                style: AppTheme.metricDisplay.copyWith(color: scheme.onSurface),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: Text(
-                  'vigentes',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '$activeCount',
+                    style: AppTheme.metricDisplay.copyWith(
+                      color: scheme.onSurface,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                    child: Text(
+                      'vigentes',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const Spacer(),
               FilledButton.icon(
                 style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
                 onPressed: onNewCampaign,
@@ -424,19 +462,23 @@ class _VerifyResultCard extends StatelessWidget {
                 color: fg,
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                reason,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: fg,
-                  fontWeight: FontWeight.w600,
+              Expanded(
+                child: Text(
+                  reason,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: fg,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
             children: [
               Text(
                 c.code,
@@ -579,8 +621,10 @@ class _CampaignCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xxs,
               children: [
                 Text(
                   'Canjeados: ${coupon.currentUses} / ${coupon.maxUses}',

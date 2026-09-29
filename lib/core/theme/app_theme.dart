@@ -18,8 +18,22 @@ abstract final class AppColors {
   static const Color dangerContainer = Color(0xFFFEF2F2);
   static const Color onDangerContainer = Color(0xFF991B1B);
 
+  static const Color danger = Color(0xFFEF4444);
+  static const Color dangerStrong = Color(0xFFDC2626);
+
+  /// Neutral "slate obsidian" para tipografía de alto contraste.
+  static const Color neutral = Color(0xFF0F172A);
+  static const Color canvas = Color(0xFFF8FAFC);
+  static const Color subtleSurface = Color(0xFFF1F5F9);
+
   static const Color mutedText = Color(0xFF64748B);
+  static const Color placeholder = Color(0xFF94A3B8);
   static const Color hairline = Color(0xFFE2E8F0);
+  static const Color border = Color(0xFFCBD5E1);
+
+  /// Acentos legibles sobre superficies `primary` (hero cards).
+  static const Color onPrimaryPositive = Color(0xFF6CF8BB);
+  static const Color onPrimaryNegative = Color(0xFFFCA5A5);
 }
 
 /// Radios estandarizados (`rounded` tokens del DESIGN.md).
@@ -39,6 +53,15 @@ abstract final class AppSpacing {
   static const double md = 16;
   static const double lg = 24;
   static const double xl = 32;
+
+  /// Separación mínima del sub-grid de 4pt para detalles densos.
+  static const double xxs = 2;
+
+  /// `gutter-mobile` / `margin-mobile` / `gutter` / `margin`.
+  static const double gutterMobile = 12;
+  static const double marginMobile = 16;
+  static const double gutter = 24;
+  static const double margin = 32;
 }
 
 /// Tema visual de NegocioListo Pro, derivado 1:1 de los tokens de color y
@@ -80,97 +103,75 @@ abstract final class AppTheme {
     surfaceTint: Color(0xFF4059AA),
   );
 
+  /// Única familia tipográfica del sistema (empaquetada en `assets/fonts`
+  /// para funcionar offline).
+  static const String fontFamily = 'Inter';
+
+  /// `tnum`: cifras tabulares para que montos y conteos no "bailen" al
+  /// actualizarse en vivo.
+  static const List<FontFeature> _tabular = [FontFeature.tabularFigures()];
+
+  static TextStyle _style(
+    double size,
+    FontWeight weight,
+    double lineHeight,
+    double trackingEm,
+    Color color,
+  ) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontSize: size,
+      fontWeight: weight,
+      height: lineHeight / size,
+      letterSpacing: trackingEm * size,
+      color: color,
+      fontFeatures: _tabular,
+    );
+  }
+
   static TextTheme _textTheme(ColorScheme scheme) {
+    final onSurface = scheme.onSurface;
     return TextTheme(
-      displayLarge: TextStyle(
-        fontSize: 30,
-        fontWeight: FontWeight.w700,
-        height: 36 / 30,
-        letterSpacing: -0.02 * 30,
-        color: scheme.onSurface,
-      ),
-      headlineLarge: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        height: 32 / 24,
-        letterSpacing: -0.015 * 24,
-        color: scheme.onSurface,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 28 / 20,
-        letterSpacing: -0.01 * 20,
-        color: scheme.onSurface,
-      ),
-      headlineSmall: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 24 / 16,
-        letterSpacing: -0.005 * 16,
-        color: scheme.onSurface,
-      ),
-      titleLarge: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 28 / 20,
-        color: scheme.onSurface,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 24 / 16,
-        color: scheme.onSurface,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        height: 24 / 16,
-        color: scheme.onSurface,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        height: 20 / 14,
-        color: scheme.onSurface,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        height: 16 / 12,
-        letterSpacing: 0.005 * 12,
-        color: scheme.onSurfaceVariant,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        height: 20 / 14,
-        letterSpacing: 0.01 * 14,
-        color: scheme.onSurface,
-      ),
-      labelMedium: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        height: 16 / 12,
-        letterSpacing: 0.02 * 12,
-        color: AppColors.mutedText,
-      ),
-      labelSmall: TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        height: 14 / 11,
-        letterSpacing: 0.03 * 11,
-        color: scheme.onSurfaceVariant,
+      // display-lg-mobile
+      displayLarge: _style(30, FontWeight.w700, 36, -0.02, onSurface),
+      // headline-xl-mobile
+      displayMedium: _style(24, FontWeight.w600, 32, -0.015, onSurface),
+      // metric-display
+      displaySmall: _style(28, FontWeight.w700, 32, -0.03, onSurface),
+      // headline-lg
+      headlineLarge: _style(24, FontWeight.w600, 32, -0.015, onSurface),
+      // headline-md
+      headlineMedium: _style(20, FontWeight.w600, 28, -0.01, onSurface),
+      // headline-sm
+      headlineSmall: _style(16, FontWeight.w600, 24, -0.005, onSurface),
+      titleLarge: _style(20, FontWeight.w600, 28, -0.01, onSurface),
+      titleMedium: _style(16, FontWeight.w600, 24, -0.005, onSurface),
+      titleSmall: _style(14, FontWeight.w600, 20, 0.01, onSurface),
+      // body-lg / body-md / body-sm
+      bodyLarge: _style(16, FontWeight.w400, 24, 0, onSurface),
+      bodyMedium: _style(14, FontWeight.w400, 20, 0, onSurface),
+      bodySmall: _style(12, FontWeight.w400, 16, 0.005, AppColors.mutedText),
+      // label-lg / label-md / label-sm
+      labelLarge: _style(14, FontWeight.w500, 20, 0.01, onSurface),
+      labelMedium: _style(12, FontWeight.w500, 16, 0.02, AppColors.mutedText),
+      labelSmall: _style(
+        11,
+        FontWeight.w600,
+        14,
+        0.03,
+        scheme.onSurfaceVariant,
       ),
     );
   }
 
   /// `metric-display` — reservado para balances/totales en dashboards.
   static const TextStyle metricDisplay = TextStyle(
+    fontFamily: fontFamily,
     fontSize: 28,
     fontWeight: FontWeight.w700,
     height: 32 / 28,
     letterSpacing: -0.03 * 28,
+    fontFeatures: _tabular,
   );
 
   static ThemeData get light => forBrand(BrandConfig.house);
@@ -188,6 +189,7 @@ abstract final class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
       textTheme: textTheme,
@@ -272,13 +274,14 @@ abstract final class AppTheme {
           vertical: AppSpacing.sm + 4,
         ),
         labelStyle: textTheme.bodyMedium?.copyWith(color: AppColors.mutedText),
+        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.placeholder),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.dm),
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.dm),
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.dm),

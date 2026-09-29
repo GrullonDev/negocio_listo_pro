@@ -99,7 +99,8 @@ Qué cambia con la marca:
 
 - **Nombre del negocio y lema** en el login y en el título de la app.
 - **Color primario, contenedor y secundario:** botones, FAB, navegación, agenda y tarjetas. Todo el sistema de diseño se re-colorea desde un solo lugar ([AppTheme.forBrand](../lib/core/theme/app_theme.dart)).
-- **Símbolo de moneda** (`RD$`, `$`, `Q`…) en el dashboard, los movimientos y los cupones.
+- **Símbolo de moneda** (`Q`, Quetzal por defecto) en el dashboard, los movimientos y los cupones.
+- **App nativa separada (Android e iOS):** nombre bajo el ícono, color de fondo del ícono e ID propio (`com.grullondev.negocio_listo_pro.clinica`, etc.). Cada marca se instala junto a las demás, con sus propios datos.
 
 **Truco de demo:** ten dos builds instalados (por ejemplo `salon` y `barberia`) y cambia entre ellos delante del cliente. Ver la misma app con otra identidad en 5 segundos es más convincente que cualquier explicación.
 
@@ -117,6 +118,14 @@ Qué cambia con la marca:
 ),
 ```
 
+Y agrega su línea en [`branding/brands.conf`](../branding/brands.conf) (nombre de la app, sufijo del ID y color del ícono):
+
+```text
+donpepe|Spa Don Pepe|.donpepe|#2E5E4E
+```
+
+Un test (`test/core/branding/native_brands_test.dart`) avisa si ambas listas no coinciden.
+
 Luego ejecuta `fvm flutter run --dart-define=BRAND=donpepe`. Saca los colores de su Instagram o de su letrero. Llegar con _su_ marca ya puesta cierra ventas.
 
 ---
@@ -127,7 +136,7 @@ Luego ejecuta `fvm flutter run --dart-define=BRAND=donpepe`. Saca los colores de
 | --------------------------------------------------------------------------------- | -------- | --------------------------------------- |
 | Logo del cliente (imagen) en el login, en lugar de la inicial                     | Bajo     | Alto                                    |
 | Nombre del _tenant_ en el AppBar del home                                         | Bajo     | Medio                                   |
-| Icono y nombre del app por cliente (flavors + `flutter_launcher_icons`)           | Medio    | Alto                                    |
+| Logo propio en el ícono por cliente (hoy cambia el color de fondo, no la imagen)  | Medio    | Alto                                    |
 | Marca configurable en tiempo de ejecución (sin recompilar)                        | Medio    | Alto para vender como SaaS              |
 | Datos aislados por tenant (hoy todos los usuarios comparten los datos de negocio) | Medio    | Requisito antes de vender multi-negocio |
 

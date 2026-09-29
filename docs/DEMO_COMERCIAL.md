@@ -113,7 +113,7 @@ Qué cambia con la marca:
   primary: Color(0xFF2E5E4E),         // color de su logo / letrero
   primaryContainer: Color(0xFF3F7A66),
   secondary: Color(0xFFC9A227),
-  currencySymbol: r'RD$',
+  currencySymbol: 'Q', // GTQ – Quetzal
 ),
 ```
 

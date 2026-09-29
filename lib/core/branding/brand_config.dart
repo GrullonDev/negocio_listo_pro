@@ -13,6 +13,9 @@ class BrandConfig {
   final Color primary;
   final Color primaryContainer;
   final Color secondary;
+
+  /// Moneda local: Quetzal guatemalteco (GTQ) por defecto.
+  final String currencyCode;
   final String currencySymbol;
 
   const BrandConfig({
@@ -22,7 +25,8 @@ class BrandConfig {
     required this.primary,
     required this.primaryContainer,
     required this.secondary,
-    this.currencySymbol = r'$',
+    this.currencyCode = 'GTQ',
+    this.currencySymbol = 'Q',
   });
 
   static const house = BrandConfig(
@@ -43,7 +47,6 @@ class BrandConfig {
       primary: Color(0xFF6D1B5E),
       primaryContainer: Color(0xFF8E2E7C),
       secondary: Color(0xFFB5838D),
-      currencySymbol: r'RD$',
     ),
     'barberia': BrandConfig(
       key: 'barberia',
@@ -52,7 +55,6 @@ class BrandConfig {
       primary: Color(0xFF1F1F1F),
       primaryContainer: Color(0xFF3A3A3A),
       secondary: Color(0xFFB8860B),
-      currencySymbol: r'RD$',
     ),
     'clinica': BrandConfig(
       key: 'clinica',
@@ -61,7 +63,6 @@ class BrandConfig {
       primary: Color(0xFF006D77),
       primaryContainer: Color(0xFF168A94),
       secondary: Color(0xFF83C5BE),
-      currencySymbol: r'RD$',
     ),
   };
 
@@ -70,6 +71,17 @@ class BrandConfig {
       presets[const String.fromEnvironment('BRAND', defaultValue: 'default')] ??
       house;
 
-  String formatMoney(double amount) =>
-      '$currencySymbol${amount.toStringAsFixed(2)}';
+  /// Formato local de Guatemala: `Q1,234.56` (coma de miles, punto
+  /// decimal). Los negativos se muestran como `-Q1,234.56`.
+  String formatMoney(double amount) {
+    final fixed = amount.abs().toStringAsFixed(2);
+    final dot = fixed.indexOf('.');
+    final integer = fixed.substring(0, dot);
+    final grouped = integer.replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (_) => ',',
+    );
+    final sign = amount < 0 ? '-' : '';
+    return '$sign$currencySymbol$grouped${fixed.substring(dot)}';
+  }
 }

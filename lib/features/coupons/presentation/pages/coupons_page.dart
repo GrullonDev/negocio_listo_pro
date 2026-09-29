@@ -142,7 +142,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
                     'Validar y Canjear en Caja',
                     style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     'Ingresa el código del cupón del cliente',
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -225,7 +225,7 @@ class _CouponsScreenState extends State<_CouponsScreen> {
           const SizedBox(height: AppSpacing.sm),
           if (coupons.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
               child: Center(
                 child: Text(
                   'Aún no hay cupones creados',
@@ -282,7 +282,7 @@ class _SummaryCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.local_offer, size: 16, color: scheme.primary),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'CUPONES ACTIVOS',
                 style: theme.textTheme.labelMedium?.copyWith(
@@ -292,7 +292,10 @@ class _SummaryCard extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xxs,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.successContainer,
                   borderRadius: BorderRadius.circular(AppRadius.full),
@@ -315,9 +318,9 @@ class _SummaryCard extends StatelessWidget {
                 '$activeCount',
                 style: AppTheme.metricDisplay.copyWith(color: scheme.onSurface),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.sm),
               Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Text(
                   'vigentes',
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -367,7 +370,7 @@ class _VerifyResultCard extends StatelessWidget {
         child: Row(
           children: [
             const Icon(Icons.error_outline, color: AppColors.onDangerContainer),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 'No se encontró ningún cupón con ese código',
@@ -420,7 +423,7 @@ class _VerifyResultCard extends StatelessWidget {
                 size: 16,
                 color: fg,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 reason,
                 style: theme.textTheme.labelMedium?.copyWith(
@@ -451,7 +454,7 @@ class _VerifyResultCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '${c.currentUses}/${c.maxUses} usos · vence '
             '${c.expirationDate.day}/${c.expirationDate.month}/${c.expirationDate.year}',
@@ -548,8 +551,8 @@ class _CampaignCard extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.12),
@@ -575,7 +578,7 @@ class _CampaignCard extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation(statusColor),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -15,7 +15,7 @@ class RecentTransactionsList extends StatelessWidget {
 
     if (transactions.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 32),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
         child: Center(
           child: Text(
             'Aún no hay movimientos registrados',
@@ -67,7 +67,7 @@ class RecentTransactionsList extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       _formatDate(transaction.date),
                       style: theme.textTheme.bodySmall?.copyWith(

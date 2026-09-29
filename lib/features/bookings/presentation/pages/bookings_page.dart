@@ -118,8 +118,8 @@ class _BookingsScreen extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.successContainer,
@@ -133,7 +133,7 @@ class _BookingsScreen extends StatelessWidget {
                             size: 8,
                             color: AppColors.success,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.sm),
                           Text(
                             _isToday(selectedDate)
                                 ? 'Hoy'
@@ -164,7 +164,9 @@ class _BookingsScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 if (dayBookings.isEmpty)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.xl,
+                    ),
                     child: Center(
                       child: Text(
                         'No hay citas para este día',
@@ -189,7 +191,7 @@ class _BookingsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
+          /* Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.md,
               0,
@@ -204,7 +206,7 @@ class _BookingsScreen extends StatelessWidget {
                 label: const Text('Nueva Cita'),
               ),
             ),
-          ),
+          ), */
         ],
       ),
     );
@@ -264,13 +266,15 @@ class _WeekStrip extends StatelessWidget {
 
           return Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: index == days.length - 1 ? 0 : 4),
+              padding: EdgeInsets.only(
+                right: index == days.length - 1 ? 0 : AppSpacing.xs,
+              ),
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 onTap: () => onSelect(day),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? scheme.primary
@@ -288,7 +292,7 @@ class _WeekStrip extends StatelessWidget {
                               : scheme.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${day.day}',
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -298,7 +302,7 @@ class _WeekStrip extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       if (count > 0)
                         Container(
                           width: 5,
@@ -311,7 +315,7 @@ class _WeekStrip extends StatelessWidget {
                           ),
                         )
                       else
-                        const SizedBox(height: 5),
+                        const SizedBox(height: AppSpacing.xs),
                     ],
                   ),
                 ),
@@ -363,7 +367,7 @@ class _OccupancyCard extends StatelessWidget {
                       size: 18,
                       color: AppColors.success,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Ocupación estimada',
                       style: theme.textTheme.bodyMedium,
@@ -551,8 +555,8 @@ class _BookingTimelineTile extends StatelessWidget {
                           const SizedBox(width: AppSpacing.sm),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
                               color: color.withValues(alpha: 0.12),

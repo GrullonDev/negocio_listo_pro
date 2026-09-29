@@ -45,7 +45,7 @@ class StatCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: color.withValues(alpha: 0.12),
@@ -53,7 +53,7 @@ class StatCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             Text(
               value,
               style: AppTheme.metricDisplay.copyWith(

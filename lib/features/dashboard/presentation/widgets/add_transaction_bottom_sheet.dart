@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/transaction_entity.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 
 /// Modal form to register a local income/expense transaction. Only
@@ -80,7 +81,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
               'Nueva transacción',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             SegmentedButton<TransactionType>(
               segments: const [
                 ButtonSegment(
@@ -98,7 +99,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
               onSelectionChanged: (selection) =>
                   setState(() => _type = selection.first),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
@@ -109,7 +110,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                   ? 'Ingresa una descripción'
                   : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             TextFormField(
               controller: _amountController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -131,7 +132,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                 return null;
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,
               child: FilledButton(

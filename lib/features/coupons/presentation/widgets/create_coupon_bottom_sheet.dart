@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/features/coupons/domain/entities/coupon_entity.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_event.dart';
 
 /// Formulario modal para generar un cupón nuevo. Solo despacha
@@ -95,7 +96,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Nuevo cupón', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _codeController,
               textCapitalization: TextCapitalization.characters,
@@ -107,7 +108,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
                   ? 'Ingresa el código del cupón'
                   : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             SegmentedButton<DiscountType>(
               segments: const [
                 ButtonSegment(
@@ -125,7 +126,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
               onSelectionChanged: (selection) =>
                   setState(() => _discountType = selection.first),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             TextFormField(
               controller: _valueController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -156,7 +157,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
                 return null;
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             TextFormField(
               controller: _maxUsesController,
               keyboardType: TextInputType.number,
@@ -172,7 +173,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
                 return null;
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             ListTile(
               contentPadding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
@@ -185,7 +186,7 @@ class _CreateCouponBottomSheetState extends State<CreateCouponBottomSheet> {
               ),
               onTap: _pickExpirationDate,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,
               child: FilledButton(

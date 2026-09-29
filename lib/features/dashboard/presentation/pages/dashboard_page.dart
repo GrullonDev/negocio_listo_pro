@@ -92,8 +92,8 @@ class _DashboardContent extends StatelessWidget {
               Text('Movimientos recientes', style: theme.textTheme.titleMedium),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainer,
@@ -174,8 +174,8 @@ class _BalanceHeroCard extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
                   color: scheme.onPrimary.withValues(alpha: 0.14),
@@ -189,7 +189,7 @@ class _BalanceHeroCard extends StatelessWidget {
                       size: 14,
                       color: scheme.onPrimary,
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: AppSpacing.xxs),
                     Text(
                       isPositive ? 'Positivo' : 'Negativo',
                       style: theme.textTheme.labelSmall?.copyWith(
@@ -205,9 +205,8 @@ class _BalanceHeroCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             BrandConfig.current.formatMoney(metrics.netBalance),
-            style: AppTheme.metricDisplay.copyWith(
+            style: theme.textTheme.displayLarge?.copyWith(
               color: scheme.onPrimary,
-              fontSize: 34,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -220,7 +219,7 @@ class _BalanceHeroCard extends StatelessWidget {
                   label: 'Ingresos',
                   value: metrics.totalIncome,
                   icon: Icons.south_west,
-                  iconColor: const Color(0xFF6CF8BB),
+                  iconColor: AppColors.onPrimaryPositive,
                   onPrimary: scheme.onPrimary,
                 ),
               ),
@@ -234,7 +233,7 @@ class _BalanceHeroCard extends StatelessWidget {
                   label: 'Gastos',
                   value: metrics.totalExpenses,
                   icon: Icons.north_east,
-                  iconColor: const Color(0xFFFCA5A5),
+                  iconColor: AppColors.onPrimaryNegative,
                   onPrimary: scheme.onPrimary,
                 ),
               ),
@@ -288,7 +287,7 @@ class _HeroMetric extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 14, color: iconColor),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               label,
               style: theme.textTheme.labelSmall?.copyWith(
@@ -297,7 +296,7 @@ class _HeroMetric extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xxs),
         Text(
           isCount
               ? value.toStringAsFixed(0)

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/features/bookings/domain/entities/booking_entity.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_event.dart';
 
 /// Modal form to register a local booking/appointment. Only dispatches
@@ -85,7 +86,7 @@ class _AddBookingBottomSheetState extends State<AddBookingBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Nueva cita', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _clientController,
               decoration: const InputDecoration(
@@ -96,7 +97,7 @@ class _AddBookingBottomSheetState extends State<AddBookingBottomSheet> {
                   ? 'Ingresa el nombre del cliente'
                   : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             TextFormField(
               controller: _serviceController,
               decoration: const InputDecoration(
@@ -107,7 +108,7 @@ class _AddBookingBottomSheetState extends State<AddBookingBottomSheet> {
                   ? 'Ingresa el servicio'
                   : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             ListTile(
               contentPadding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
@@ -118,7 +119,7 @@ class _AddBookingBottomSheetState extends State<AddBookingBottomSheet> {
               title: Text('${_date.day}/${_date.month}/${_date.year}'),
               onTap: _pickDate,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,
               child: FilledButton(

@@ -84,9 +84,11 @@ class _CustomersScreenState extends State<_CustomersScreen> {
     final last = _lastVisit(customer);
     if (last == null) return 'Sin visitas';
     final now = DateTime.now();
-    final days = DateTime(now.year, now.month, now.day)
-        .difference(DateTime(last.year, last.month, last.day))
-        .inDays;
+    final days = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime(last.year, last.month, last.day)).inDays;
     if (days <= 0) return 'Hoy';
     if (days == 1) return 'Ayer';
     return 'Hace $days días';
@@ -177,7 +179,7 @@ class _CustomersScreenState extends State<_CustomersScreen> {
                   selected: _tierFilter == null,
                   onTap: () => setState(() => _tierFilter = null),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 for (final tier in LoyaltyTier.values) ...[
                   _FilterChipButton(
                     label:
@@ -186,7 +188,7 @@ class _CustomersScreenState extends State<_CustomersScreen> {
                     selected: _tierFilter == tier,
                     onTap: () => setState(() => _tierFilter = tier),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                 ],
               ],
             ),
@@ -194,7 +196,7 @@ class _CustomersScreenState extends State<_CustomersScreen> {
           const SizedBox(height: AppSpacing.md),
           if (filtered.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
               child: Center(
                 child: Text(
                   customers.isEmpty
@@ -231,7 +233,11 @@ class _StatTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const _StatTile({required this.icon, required this.label, required this.value});
+  const _StatTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -253,10 +259,12 @@ class _StatTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
-            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -297,7 +305,10 @@ class _FilterChipButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.full),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.gutterMobile,
+          vertical: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
           color: selected ? accent : scheme.surfaceContainer,
           borderRadius: BorderRadius.circular(AppRadius.full),
@@ -336,7 +347,9 @@ class _CustomerCard extends StatelessWidget {
     final parts = customer.name.trim().split(RegExp(r'\s+'));
     if (parts.isEmpty || parts.first.isEmpty) return '?';
     final first = parts.first[0];
-    final second = parts.length > 1 && parts.last.isNotEmpty ? parts.last[0] : '';
+    final second = parts.length > 1 && parts.last.isNotEmpty
+        ? parts.last[0]
+        : '';
     return (first + second).toUpperCase();
   }
 
@@ -383,7 +396,7 @@ class _CustomerCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.xxs),
                       Text(
                         customer.phone,
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -394,7 +407,10 @@ class _CustomerCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
                   decoration: BoxDecoration(
                     color: tierColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(AppRadius.full),
@@ -403,7 +419,7 @@ class _CustomerCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.workspace_premium, size: 14, color: tierColor),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         tierLabel,
                         style: theme.textTheme.labelSmall?.copyWith(
@@ -444,7 +460,8 @@ class _CustomerCard extends StatelessWidget {
                     child: _MiniStat(
                       label: 'Última visita',
                       value: lastVisitLabel,
-                      valueColor: lastVisitLabel == 'Hoy' || lastVisitLabel == 'Ayer'
+                      valueColor:
+                          lastVisitLabel == 'Hoy' || lastVisitLabel == 'Ayer'
                           ? AppColors.success
                           : null,
                     ),
@@ -546,9 +563,16 @@ class _BenefitsLadderCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.sell_outlined, size: 18, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text('Escalafón de Niveles', style: theme.textTheme.titleMedium),
+                Icon(
+                  Icons.sell_outlined,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'Escalafón de Niveles',
+                  style: theme.textTheme.titleMedium,
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -557,11 +581,13 @@ class _BenefitsLadderCard extends StatelessWidget {
                 final color = tierColor(context, tier);
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xs,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: AppSpacing.sm,
-                        horizontal: 4,
+                        horizontal: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
                         color: color.withValues(alpha: 0.1),
@@ -570,7 +596,7 @@ class _BenefitsLadderCard extends StatelessWidget {
                       child: Column(
                         children: [
                           Icon(_icons[tier], size: 20, color: color),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             tierLabel(tier),
                             style: theme.textTheme.labelMedium?.copyWith(
@@ -578,7 +604,7 @@ class _BenefitsLadderCard extends StatelessWidget {
                               color: color,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.xxs),
                           Text(
                             _ranges[tier]!,
                             textAlign: TextAlign.center,

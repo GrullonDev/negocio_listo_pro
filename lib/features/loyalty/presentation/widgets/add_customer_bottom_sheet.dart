@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/features/loyalty/domain/entities/customer_loyalty_entity.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
+import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_event.dart';
 
 /// Formulario modal para registrar un cliente nuevo en el programa de
@@ -76,7 +77,7 @@ class _AddCustomerBottomSheetState extends State<AddCustomerBottomSheet> {
               'Nuevo cliente',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
@@ -87,7 +88,7 @@ class _AddCustomerBottomSheetState extends State<AddCustomerBottomSheet> {
                   ? 'Ingresa el nombre del cliente'
                   : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.gutterMobile),
             TextFormField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
@@ -99,7 +100,7 @@ class _AddCustomerBottomSheetState extends State<AddCustomerBottomSheet> {
                   ? 'Ingresa el teléfono'
                   : null,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,
               child: FilledButton(

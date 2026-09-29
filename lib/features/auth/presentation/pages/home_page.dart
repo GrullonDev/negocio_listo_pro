@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(tab.icon, color: color),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 tab.label,
                 style: Theme.of(context).textTheme.labelSmall

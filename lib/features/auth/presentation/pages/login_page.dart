@@ -39,66 +39,75 @@ class _LoginPageState extends State<LoginPage> {
                 .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 36,
-                backgroundColor: theme.colorScheme.primary,
-                child: Text(
-                  brand.businessName.substring(0, 1).toUpperCase(),
-                  style: theme.textTheme.displayLarge?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                brand.businessName,
-                style: theme.textTheme.headlineLarge,
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                brand.tagline,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.secondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Correo'),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Contraseña'),
-                obscureText: true,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  if (state is AuthLoading) {
-                    return const CircularProgressIndicator();
-                  }
-                  return ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(
-                        AuthLoginRequested(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text,
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 36,
+                      backgroundColor: theme.colorScheme.primary,
+                      child: Text(
+                        brand.businessName.substring(0, 1).toUpperCase(),
+                        style: theme.textTheme.displayLarge?.copyWith(
+                          color: theme.colorScheme.onPrimary,
                         ),
-                      );
-                    },
-                    child: const Text('Ingresar'),
-                  );
-                },
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      brand.businessName,
+                      style: theme.textTheme.headlineLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      brand.tagline,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.secondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    TextField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Correo'),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    TextField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Contraseña',
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        if (state is AuthLoading) {
+                          return const CircularProgressIndicator();
+                        }
+                        return ElevatedButton(
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                              AuthLoginRequested(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text,
+                              ),
+                            );
+                          },
+                          child: const Text('Ingresar'),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),

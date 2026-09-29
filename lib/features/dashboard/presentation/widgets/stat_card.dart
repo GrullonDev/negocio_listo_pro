@@ -31,6 +31,7 @@ class StatCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,14 +54,17 @@ class StatCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.gutterMobile),
-            Text(
-              value,
-              style: AppTheme.metricDisplay.copyWith(
-                color: theme.colorScheme.onSurface,
+            // Un monto truncado es engañoso: se reduce en vez de cortarse.
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: AppTheme.metricDisplay.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
+                maxLines: 1,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

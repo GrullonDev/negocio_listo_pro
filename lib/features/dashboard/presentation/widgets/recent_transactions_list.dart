@@ -78,11 +78,16 @@ class RecentTransactionsList extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                '${isIncome ? '+' : '-'}${BrandConfig.current.formatMoney(transaction.amount)}',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '${isIncome ? '+' : '-'}${BrandConfig.current.formatMoney(transaction.amount)}',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ],

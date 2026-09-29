@@ -64,12 +64,18 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    // Desplazable: en teléfonos pequeños el teclado deja poco alto útil.
+    return SingleChildScrollView(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+        left: AppSpacing.md,
+        right: AppSpacing.md,
+        top: AppSpacing.md,
+        // viewPadding: deja libre la barra de navegación del sistema
+        // (gestos/botones) para que no tape el botón de guardar.
+        bottom:
+            AppSpacing.md +
+            MediaQuery.viewInsetsOf(context).bottom +
+            MediaQuery.viewPaddingOf(context).bottom,
       ),
       child: Form(
         key: _formKey,

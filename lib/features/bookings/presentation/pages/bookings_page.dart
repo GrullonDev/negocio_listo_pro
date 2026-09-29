@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/entities/booking_entity.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_event.dart';
+import 'package:negocio_listo_pro/core/theme/responsive.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_state.dart';
-import 'package:negocio_listo_pro/features/bookings/presentation/widgets/add_booking_bottom_sheet.dart';
 
 class BookingsPage extends StatefulWidget {
   const BookingsPage({super.key});
@@ -102,19 +103,21 @@ class _BookingsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
+              padding: EdgeInsets.fromLTRB(
+                context.pageMargin,
+                context.pageMargin,
+                context.pageMargin,
                 AppSpacing.sm,
               ),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${_monthNames[selectedDate.month - 1]} ${selectedDate.year}',
-                      style: theme.textTheme.headlineSmall,
+                    Expanded(
+                      child: Text(
+                        '${_monthNames[selectedDate.month - 1]} ${selectedDate.year}',
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -253,9 +256,11 @@ class _WeekStrip extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return SizedBox(
-      height: 76,
+    // Sin alto fijo: la tira crece con el escalado de texto y todas las
+    // celdas comparten el alto de la más alta.
+    return IntrinsicHeight(
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: List.generate(days.length, (index) {
           final day = days[index];
           final isSelected =
@@ -284,12 +289,15 @@ class _WeekStrip extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        _dayLabels[day.weekday - 1],
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: isSelected
-                              ? scheme.onPrimary.withValues(alpha: 0.75)
-                              : scheme.onSurfaceVariant,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          _dayLabels[day.weekday - 1],
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: isSelected
+                                ? scheme.onPrimary.withValues(alpha: 0.75)
+                                : scheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -358,21 +366,18 @@ class _OccupancyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.donut_large,
-                      size: 18,
-                      color: AppColors.success,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Ocupación estimada',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ],
+                const Icon(
+                  Icons.donut_large,
+                  size: 18,
+                  color: AppColors.success,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Ocupación estimada',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
                 Text(
                   '${(occupancy * 100).round()}%',
@@ -394,8 +399,10 @@ class _OccupancyCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xxs,
               children: [
                 Text(
                   '$resolved de $scheduled citas confirmadas',
@@ -477,7 +484,7 @@ class _BookingTimelineTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 52,
+            width: MediaQuery.textScalerOf(context).scale(52),
             child: Text(
               _time(),
               textAlign: TextAlign.right,

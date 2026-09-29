@@ -6,6 +6,7 @@ import 'package:negocio_listo_pro/features/loyalty/domain/entities/customer_loya
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_event.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_state.dart';
+import 'package:negocio_listo_pro/core/theme/responsive.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/widgets/add_points_dialog.dart';
 
 class LoyaltyPage extends StatelessWidget {
@@ -118,7 +119,7 @@ class _CustomersScreenState extends State<_CustomersScreen> {
         context.read<LoyaltyBloc>().add(const LoadCustomers());
       },
       child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: context.pagePadding,
         children: [
           TextField(
             controller: _searchController,
@@ -169,10 +170,10 @@ class _CustomersScreenState extends State<_CustomersScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            height: 36,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+          // Sin alto fijo para que los chips crezcan con el escalado de texto.
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               children: [
                 _FilterChipButton(
                   label: 'Todos ($total)',
@@ -514,6 +515,8 @@ class _MiniStat extends StatelessWidget {
         ),
         Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -569,9 +572,11 @@ class _BenefitsLadderCard extends StatelessWidget {
                   color: theme.colorScheme.primary,
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                Text(
-                  'Escalafón de Niveles',
-                  style: theme.textTheme.titleMedium,
+                Expanded(
+                  child: Text(
+                    'Escalafón de Niveles',
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
@@ -597,19 +602,25 @@ class _BenefitsLadderCard extends StatelessWidget {
                         children: [
                           Icon(_icons[tier], size: 20, color: color),
                           const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            tierLabel(tier),
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: color,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              tierLabel(tier),
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: color,
+                              ),
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xxs),
-                          Text(
-                            _ranges[tier]!,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              _ranges[tier]!,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                             ),
                           ),
                         ],

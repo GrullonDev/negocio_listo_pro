@@ -8,6 +8,7 @@ import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/recent_transactions_list.dart';
+import 'package:negocio_listo_pro/core/theme/responsive.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/widgets/stat_card.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -45,17 +46,22 @@ class _DashboardContent extends StatelessWidget {
         context.read<DashboardBloc>().add(const LoadDashboardMetrics());
       },
       child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: context.pagePadding,
         children: [
           _BalanceHeroCard(metrics: metrics, isPositive: isPositive),
           const SizedBox(height: AppSpacing.md),
-          GridView.count(
-            crossAxisCount: 2,
+          GridView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: AppSpacing.sm + 4,
-            crossAxisSpacing: AppSpacing.sm + 4,
-            childAspectRatio: 1.4,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // 4 columnas cuando hay espacio (tablet/horizontal), 2 en móvil.
+              crossAxisCount: context.screenWidth >= 560 ? 4 : 2,
+              mainAxisSpacing: AppSpacing.gutterMobile,
+              crossAxisSpacing: AppSpacing.gutterMobile,
+              // Alto fijo que crece con el escalado de texto: el antiguo
+              // childAspectRatio desbordaba en pantallas angostas.
+              mainAxisExtent: MediaQuery.textScalerOf(context).scale(112),
+            ),
             children: [
               StatCard(
                 label: 'Ingresos Totales',
@@ -89,7 +95,12 @@ class _DashboardContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Movimientos recientes', style: theme.textTheme.titleMedium),
+              Expanded(
+                child: Text(
+                  'Movimientos recientes',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -203,10 +214,14 @@ class _BalanceHeroCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            BrandConfig.current.formatMoney(metrics.netBalance),
-            style: theme.textTheme.displayLarge?.copyWith(
-              color: scheme.onPrimary,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              BrandConfig.current.formatMoney(metrics.netBalance),
+              style: theme.textTheme.displayLarge?.copyWith(
+                color: scheme.onPrimary,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -288,25 +303,32 @@ class _HeroMetric extends StatelessWidget {
           children: [
             Icon(icon, size: 14, color: iconColor),
             const SizedBox(width: AppSpacing.xs),
-            Text(
-              label,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: onPrimary.withValues(alpha: 0.75),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: onPrimary.withValues(alpha: 0.75),
+                ),
               ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.xxs),
-        Text(
-          isCount
-              ? value.toStringAsFixed(0)
-              : BrandConfig.current.formatMoney(value),
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: onPrimary,
-            fontWeight: FontWeight.w700,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            isCount
+                ? value.toStringAsFixed(0)
+                : BrandConfig.current.formatMoney(value),
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: onPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

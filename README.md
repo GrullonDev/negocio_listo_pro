@@ -26,6 +26,21 @@ La mayoría de los micronegocios en mercados emergentes no fallan por falta de v
 - **Sistema satélite ultrarrápido.** Cada sucursal o punto de venta opera de forma autónoma; no hay round-trips de red que ralenticen el checkout.
 - **Resiliencia total ante fallos de conectividad.** Internet caído, zona rural, evento con mala señal — la operación de caja, citas y cupones **nunca se detiene**, porque nunca dependió de la red.
 - **Motor de promociones sin fricción.** Cupones inteligentes con validación de vigencia, estado y usos disponibles, resueltos íntegramente en el dispositivo.
+- **Identidad de marca blanca.** Cada cliente obtiene una app con su nombre, colores y moneda local — tanto en Flutter (tema dinámico) como nativo (nombre e ícono de launcher en Android/iOS).
+
+---
+
+## White-Label: Un Código, Marcas Infinitas
+
+El sistema de branding permite generar builds completamente diferenciados desde un solo código base:
+
+| Capa | Qué cambia | Cómo |
+|---|---|---|
+| **Tema Flutter** | Colores, tipografía, moneda | `BrandConfig` + `--dart-define=BRAND=<clave>` |
+| **Android** | Nombre, applicationId, color de ícono | Gradle lee `branding/brands.conf` |
+| **iOS** | Nombre de bundle, bundle ID, display name | Script `branding/ios_brand.sh` + xcconfigs |
+
+Cada marca es una app independiente: se instalan lado a lado, con sus propios datos y sin conflictos. Ver `docs/DEMO_COMERCIAL.md` para la guía completa de branding.
 
 ---
 
@@ -65,6 +80,12 @@ Esto obliga a manejar explícitamente cada camino de fallo (`CouponNotFoundFailu
 
 Cada módulo expone un `Bloc` con eventos y estados explícitos (sin `Equatable`, usando clases planas de Dart), y sigue un patrón consistente de recarga tras mutación: toda operación de escritura (`AddCustomerRequested`, `RedeemCouponRequested`) dispara automáticamente una relectura del estado para mantener la UI sincronizada con Isar.
 
+### UI Responsive y Tipografía
+
+- **Inter** como única familia tipográfica (empaquetada localmente para funcionar offline), con cifras tabulares (`tnum`) para que montos y conteos no "bailen" al actualizarse.
+- **Design tokens** centralizados en `AppColors`, `AppSpacing` y `AppRadius` — sin valores mágicos dispersos.
+- **Layout adaptativo:** `ResponsiveCenter` limita el ancho en pantallas grandes; `FittedBox` y `Wrap` previenen overflow con escalado de texto; la semana de citas usa `IntrinsicHeight` para crecer con el contenido.
+
 ---
 
 ## Estructura del Proyecto
@@ -72,8 +93,11 @@ Cada módulo expone un `Bloc` con eventos y estados explícitos (sin `Equatable`
 ```
 lib/
 ├── core/
+│   ├── branding/              # BrandConfig: identidad, moneda y presets de marca
+│   ├── demo/                  # DemoSeeder: datos de ejemplo en primer arranque
 │   ├── di/                    # Inyección de dependencias (GetIt) y apertura de Isar
 │   ├── errors/                # Jerarquía de Failure (Cache, Network, Coupon*, etc.)
+│   ├── theme/                 # AppColors, AppSpacing, AppRadius, AppTheme, ResponsiveCenter
 │   └── usecases/              # UseCase<Success, Params> base + NoParams
 │
 └── features/
@@ -82,22 +106,22 @@ lib/
     │   ├── data/
     │   └── presentation/
     │
-    ├── dashboard/              # Registro de transacciones y métricas financieras
+    ├── dashboard/             # Registro de transacciones y métricas financieras
     │   ├── domain/
     │   ├── data/
     │   └── presentation/
     │
-    ├── bookings/               # Citas y pedidos
+    ├── bookings/              # Citas y pedidos
     │   ├── domain/
     │   ├── data/
     │   └── presentation/
     │
-    ├── loyalty/                # Clientes fidelizados, puntos y niveles (tiers)
+    ├── loyalty/               # Clientes fidelizados, puntos y niveles (tiers)
     │   ├── domain/
     │   ├── data/
     │   └── presentation/
     │
-    └── coupons/                # Cupones inteligentes con validación de vigencia/usos
+    └── coupons/               # Cupones inteligentes con validación y escaneo QR
         ├── domain/
         ├── data/
         └── presentation/
@@ -117,6 +141,8 @@ Cada feature replica la misma tríada `domain/ data/ presentation/`, lo que perm
 | **get_it** | Contenedor de inyección de dependencias (Service Locator) |
 | **isar_community** | Base de datos embebida NoSQL, reactiva, offline-first |
 | **dartz** | Programación funcional — `Either<Failure, Success>` para manejo de errores |
+| **mobile_scanner** | Escaneo de códigos QR para canje de cupones en caja |
+| **permission_handler** | Gestión de permisos de cámara en Android/iOS |
 
 ---
 
@@ -156,14 +182,33 @@ Cada feature replica la misma tríada `domain/ data/ presentation/`, lo que perm
    fvm flutter run
    ```
 
+   O con una marca específica:
+
+   ```bash
+   fvm flutter run --dart-define=BRAND=barberia
+   ```
+
 5. **Iniciar sesión con las credenciales demo**
 
    La app siembra automáticamente dos cuentas locales de prueba en el primer arranque (sin backend, sin red):
 
-   | Email | Contraseña |
+   | Email | Contraña |
    |---|---|
    | `demo@negociolisto.pro` | `demo1234` |
    | `test` | `test` |
+
+---
+
+## Testing
+
+```bash
+fvm flutter test
+```
+
+Tests incluidos:
+- `test/core/branding/brand_config_test.dart` — Formato de moneda y presets de marca
+- `test/core/branding/native_brands_test.dart` — Sincronización entre `BrandConfig` y `branding/brands.conf`
+- `test/features/coupons/scan_coupon_page_test.dart` — Flujo de escaneo y canje de cupones
 
 ---
 

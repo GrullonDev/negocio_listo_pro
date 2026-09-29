@@ -1,1 +1,7 @@
 #include "Generated.xcconfig"
+
+// Marca por defecto; ios/Flutter/Brand.xcconfig (generado por
+// branding/ios_brand.sh según --dart-define=BRAND) la sobrescribe.
+BRAND_DISPLAY_NAME = NegocioListo Pro
+BRAND_BUNDLE_SUFFIX =
+#include? "Brand.xcconfig"

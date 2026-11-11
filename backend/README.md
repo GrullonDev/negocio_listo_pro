@@ -49,3 +49,4 @@ backend/
 | POST | /api/v1/customers/:id/points | Sí | Agregar puntos |
 | GET/POST | /api/v1/coupons | Sí | Listar/crear cupones |
 | POST | /api/v1/coupons/redeem | Sí | Canjear cupón |
+| GET | /api/v1/sync/changes | Sí | Pull sync con cursor (entity_type, since, limit) |

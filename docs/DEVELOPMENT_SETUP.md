@@ -41,6 +41,7 @@ docker exec -it negociolisto-db psql -U negociolisto -d negociolisto_dev -c "SEL
 ```bash
 docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/001_initial_schema.sql
 docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/002_seed_demo.sql
+docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/003_sync_indexes.sql
 ```
 
 ## 4. Configurar el backend
@@ -129,4 +130,5 @@ docker compose up -d
 # Re-ejecutar migraciones
 docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/001_initial_schema.sql
 docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/002_seed_demo.sql
+docker exec -i negociolisto-db psql -U negociolisto -d negociolisto_dev < backend/migrations/003_sync_indexes.sql
 ```

@@ -64,3 +64,10 @@ pubspec.lock
 /macos/
 /windows/
 /web/
+
+# Isar test artifacts
+*.isar-lck
+*.isar
+libisar.dll
+libisar.so
+libisar.dylib

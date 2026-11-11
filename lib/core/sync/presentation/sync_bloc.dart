@@ -47,10 +47,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
   final PullSyncService pullSyncService;
   StreamSubscription<SyncServiceStatus>? _statusSub;
 
-  SyncBloc({
-    required this.syncService,
-    required this.pullSyncService,
-  }) : super(const SyncState()) {
+  SyncBloc({required this.syncService, required this.pullSyncService})
+    : super(const SyncState()) {
     on<SyncStarted>(_onStarted);
     on<SyncRequested>(_onRequested);
     on<_SyncStatusUpdated>(_onStatusUpdated);
@@ -73,15 +71,14 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     emit(state.copyWith(isSyncing: false));
   }
 
-  void _onStatusUpdated(
-    _SyncStatusUpdated event,
-    Emitter<SyncState> emit,
-  ) {
-    emit(state.copyWith(
-      isConnected: event.status.isConnected,
-      isSyncing: event.status.isSyncing,
-      pendingOperations: event.status.pendingOperations,
-    ));
+  void _onStatusUpdated(_SyncStatusUpdated event, Emitter<SyncState> emit) {
+    emit(
+      state.copyWith(
+        isConnected: event.status.isConnected,
+        isSyncing: event.status.isSyncing,
+        pendingOperations: event.status.pendingOperations,
+      ),
+    );
   }
 
   @override

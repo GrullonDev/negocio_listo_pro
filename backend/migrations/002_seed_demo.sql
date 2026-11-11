@@ -11,15 +11,13 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Demo user (password: demo1234)
 -- The bcrypt hash below corresponds to 'demo1234'.
--- Generate with: DBCrypt().hashpw('demo1234', DBCrypt().gensalt())
--- Placeholder hash — will be generated at runtime by the seed script.
 INSERT INTO users (id, tenant_id, name, email, password_hash, role)
 VALUES (
   '00000000-0000-0000-0000-000000000002',
   '00000000-0000-0000-0000-000000000001',
   'Usuario Demo',
   'demo@negociolisto.pro',
-  '$2b$10$placeholder_generate_at_runtime',
+  '$2b$10$1.dXATTpX1nulH5IvMh5ROvbWzp9UBi72a1iwo66XghvtaGNzagzq',
   'owner'
 )
 ON CONFLICT (tenant_id, email) DO NOTHING;

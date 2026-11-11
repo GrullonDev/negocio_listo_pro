@@ -4,6 +4,9 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:negocio_listo_pro/core/demo/demo_seeder.dart';
 import 'package:negocio_listo_pro/core/network/api_client.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/booking_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/coupon_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/customer_sync_dispatcher.dart';
 import 'package:negocio_listo_pro/core/sync/dispatchers/transaction_sync_dispatcher.dart';
 import 'package:negocio_listo_pro/core/sync/pull_sync_service.dart';
 import 'package:negocio_listo_pro/core/sync/sync_operation_model.dart';
@@ -84,6 +87,18 @@ Future<void> initDependencyInjection() async {
     service.registerDispatcher(
       SyncEntityType.transaction,
       (op) => transactionSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.booking,
+      (op) => bookingSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.customer,
+      (op) => customerSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.coupon,
+      (op) => couponSyncDispatcher(op, sl()),
     );
     return service;
   });

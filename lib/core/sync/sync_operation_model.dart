@@ -38,6 +38,7 @@ class SyncOperationModel {
 
   DateTime? completedAt;
 
+  @ignore
   Map<String, dynamic> get payload =>
       jsonDecode(payloadJson) as Map<String, dynamic>;
 

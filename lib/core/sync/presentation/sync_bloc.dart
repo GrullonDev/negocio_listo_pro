@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:negocio_listo_pro/core/session/session_context.dart';
 import 'package:negocio_listo_pro/core/sync/pull_sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
 import 'package:negocio_listo_pro/core/sync/sync_service.dart';
 
 // Events
@@ -45,16 +47,24 @@ class SyncState {
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
   final SyncService syncService;
   final PullSyncService pullSyncService;
+  final SessionContext sessionContext;
+  final SyncRepository syncRepository;
   StreamSubscription<SyncServiceStatus>? _statusSub;
 
-  SyncBloc({required this.syncService, required this.pullSyncService})
+  SyncBloc({
+    required this.syncService,
+    required this.pullSyncService,
+    required this.sessionContext,
+    required this.syncRepository,
+  })
     : super(const SyncState()) {
     on<SyncStarted>(_onStarted);
     on<SyncRequested>(_onRequested);
     on<_SyncStatusUpdated>(_onStatusUpdated);
   }
 
-  void _onStarted(SyncStarted event, Emitter<SyncState> emit) {
+  Future<void> _onStarted(SyncStarted event, Emitter<SyncState> emit) async {
+    await syncRepository.recoverStuckOperations();
     _statusSub = syncService.statusStream.listen((status) {
       add(_SyncStatusUpdated(status));
     });
@@ -67,7 +77,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
   ) async {
     emit(state.copyWith(isSyncing: true));
     await syncService.processQueue();
-    await pullSyncService.pullAll();
+    await pullSyncService.pullAll(tenantId: sessionContext.tenantId);
     emit(state.copyWith(isSyncing: false));
   }
 

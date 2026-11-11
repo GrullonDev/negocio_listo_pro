@@ -260,12 +260,14 @@ const _SyncOperationModelstateEnumValueMap = {
   'processing': 1,
   'completed': 2,
   'failed': 3,
+  'terminal': 4,
 };
 const _SyncOperationModelstateValueEnumMap = {
   0: SyncOperationState.pending,
   1: SyncOperationState.processing,
   2: SyncOperationState.completed,
   3: SyncOperationState.failed,
+  4: SyncOperationState.terminal,
 };
 
 Id _syncOperationModelGetId(SyncOperationModel object) {

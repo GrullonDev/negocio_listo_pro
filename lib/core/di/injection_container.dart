@@ -4,11 +4,14 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:negocio_listo_pro/core/demo/demo_seeder.dart';
 import 'package:negocio_listo_pro/core/network/api_client.dart';
+import 'package:negocio_listo_pro/core/session/session_context.dart';
 import 'package:negocio_listo_pro/core/sync/dispatchers/booking_sync_dispatcher.dart';
 import 'package:negocio_listo_pro/core/sync/dispatchers/coupon_sync_dispatcher.dart';
 import 'package:negocio_listo_pro/core/sync/dispatchers/customer_sync_dispatcher.dart';
 import 'package:negocio_listo_pro/core/sync/dispatchers/transaction_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/presentation/sync_bloc.dart';
 import 'package:negocio_listo_pro/core/sync/pull_sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_cursor_model.dart';
 import 'package:negocio_listo_pro/core/sync/sync_operation_model.dart';
 import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
 import 'package:negocio_listo_pro/core/sync/sync_service.dart';
@@ -62,8 +65,6 @@ import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_blo
 
 final GetIt sl = GetIt.instance;
 
-/// Registers every dependency used by the app. Must run once, before
-/// [runApp], so Isar's directory is ready and the demo credential exists.
 Future<void> initDependencyInjection() async {
   final appDir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open([
@@ -74,12 +75,15 @@ Future<void> initDependencyInjection() async {
     CustomerModelSchema,
     CouponModelSchema,
     SyncOperationModelSchema,
+    SyncCursorModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
   await _seedDemoCredentials(isar);
   await DemoSeeder(isar).run();
 
+  // Core services
+  sl.registerSingleton<SessionContext>(SessionContext());
   sl.registerLazySingleton<ApiClient>(() => ApiClient());
   sl.registerLazySingleton<SyncRepository>(() => SyncRepository(sl()));
   sl.registerLazySingleton<SyncService>(() {
@@ -105,7 +109,16 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<PullSyncService>(
     () => PullSyncService(apiClient: sl(), isar: sl()),
   );
+  sl.registerFactory<SyncBloc>(
+    () => SyncBloc(
+      syncService: sl(),
+      pullSyncService: sl(),
+      sessionContext: sl(),
+      syncRepository: sl(),
+    ),
+  );
 
+  // Auth
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(sl()),
   );
@@ -115,11 +128,9 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(localDataSource: sl()),
   );
-
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GetCurrentSessionUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
-
   sl.registerFactory(
     () => AuthBloc(
       loginUseCase: sl(),
@@ -128,6 +139,7 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Dashboard / Transactions
   sl.registerLazySingleton<DashboardLocalDataSource>(
     () => DashboardLocalDataSourceImpl(sl()),
   );
@@ -139,11 +151,11 @@ Future<void> initDependencyInjection() async {
       localDataSource: sl(),
       syncRepository: sl(),
       syncService: sl(),
+      sessionContext: sl(),
     ),
   );
   sl.registerLazySingleton(() => GetDashboardMetricsUseCase(sl()));
   sl.registerLazySingleton(() => AddTransactionUseCase(sl()));
-
   sl.registerFactory(
     () => DashboardBloc(
       getDashboardMetricsUseCase: sl(),
@@ -151,6 +163,7 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Bookings
   sl.registerLazySingleton<BookingLocalDataSource>(
     () => BookingLocalDataSourceImpl(sl()),
   );
@@ -158,12 +171,16 @@ Future<void> initDependencyInjection() async {
     () => BookingRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<BookingRepository>(
-    () => BookingRepositoryImpl(localDataSource: sl()),
+    () => BookingRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetBookingsUseCase(sl()));
   sl.registerLazySingleton(() => AddBookingUseCase(sl()));
   sl.registerLazySingleton(() => UpdateBookingStatusUseCase(sl()));
-
   sl.registerFactory(
     () => BookingBloc(
       getBookingsUseCase: sl(),
@@ -172,6 +189,7 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Loyalty / Customers
   sl.registerLazySingleton<LoyaltyLocalDataSource>(
     () => LoyaltyLocalDataSourceImpl(sl()),
   );
@@ -179,12 +197,16 @@ Future<void> initDependencyInjection() async {
     () => CustomerRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<LoyaltyRepository>(
-    () => LoyaltyRepositoryImpl(localDataSource: sl()),
+    () => LoyaltyRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetCustomersUseCase(sl()));
   sl.registerLazySingleton(() => AddCustomerUseCase(sl()));
   sl.registerLazySingleton(() => AddPointsToCustomerUseCase(sl()));
-
   sl.registerFactory(
     () => LoyaltyBloc(
       getCustomersUseCase: sl(),
@@ -193,6 +215,7 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Coupons
   sl.registerLazySingleton<CouponLocalDataSource>(
     () => CouponLocalDataSourceImpl(sl()),
   );
@@ -200,12 +223,16 @@ Future<void> initDependencyInjection() async {
     () => CouponRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<CouponRepository>(
-    () => CouponRepositoryImpl(localDataSource: sl()),
+    () => CouponRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetCouponsUseCase(sl()));
   sl.registerLazySingleton(() => CreateCouponUseCase(sl()));
   sl.registerLazySingleton(() => RedeemCouponUseCase(sl()));
-
   sl.registerFactory(
     () => CouponBloc(
       getCouponsUseCase: sl(),
@@ -215,8 +242,6 @@ Future<void> initDependencyInjection() async {
   );
 }
 
-/// Ensures the offline demo accounts always exist so login works without
-/// a manual seed step. Each entry is only inserted if its email is absent.
 Future<void> _seedDemoCredentials(Isar isar) async {
   await _seedCredentialIfAbsent(
     isar,

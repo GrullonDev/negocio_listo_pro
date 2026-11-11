@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import 'package:negocio_listo_pro/core/errors/failures.dart';
+import 'package:negocio_listo_pro/core/session/session_context.dart';
 import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
 import 'package:negocio_listo_pro/core/sync/sync_service.dart';
 import 'package:negocio_listo_pro/core/sync/sync_status.dart';
@@ -12,15 +13,15 @@ import 'package:negocio_listo_pro/features/dashboard/domain/repositories/dashboa
 
 class DashboardRepositoryImpl implements DashboardRepository {
   final DashboardLocalDataSource localDataSource;
-  final SyncRepository? syncRepository;
-  final SyncService? syncService;
-  final String? tenantId;
+  final SyncRepository syncRepository;
+  final SyncService syncService;
+  final SessionContext sessionContext;
 
   const DashboardRepositoryImpl({
     required this.localDataSource,
-    this.syncRepository,
-    this.syncService,
-    this.tenantId,
+    required this.syncRepository,
+    required this.syncService,
+    required this.sessionContext,
   });
 
   @override
@@ -63,9 +64,10 @@ class DashboardRepositoryImpl implements DashboardRepository {
         TransactionModel.fromEntity(transaction),
       );
 
-      if (syncRepository != null && tenantId != null) {
-        await syncRepository!.enqueue(
-          tenantId: tenantId!,
+      final tenantId = sessionContext.tenantId;
+      if (tenantId != null && sessionContext.isRemoteSession) {
+        await syncRepository.enqueue(
+          tenantId: tenantId,
           entityType: SyncEntityType.transaction,
           entityId: transaction.id,
           operationType: SyncOperationType.create,
@@ -78,7 +80,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
             'occurred_at': transaction.date.toUtc().toIso8601String(),
           },
         );
-        syncService?.triggerSync();
+        syncService.triggerSync();
       }
 
       return const Right(null);

@@ -1,6 +1,7 @@
 import 'package:isar_community/isar.dart';
 
 import 'package:negocio_listo_pro/core/network/api_client.dart';
+import 'package:negocio_listo_pro/core/sync/sync_cursor_model.dart';
 import 'package:negocio_listo_pro/core/sync/sync_status.dart';
 import 'package:negocio_listo_pro/features/bookings/data/models/booking_model.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/entities/booking_entity.dart';
@@ -15,11 +16,42 @@ class PullSyncService {
   final ApiClient apiClient;
   final Isar isar;
 
-  final Map<SyncEntityType, String?> _cursors = {};
-
   PullSyncService({required this.apiClient, required this.isar});
 
-  Future<void> pullAll() async {
+  Future<String?> _getCursor(String tenantId, SyncEntityType entityType) async {
+    final cursor = await isar.syncCursorModels
+        .filter()
+        .tenantIdEqualTo(tenantId)
+        .entityTypeEqualTo(entityType)
+        .findFirst();
+    return cursor?.cursor;
+  }
+
+  Future<void> _saveCursor(
+    String tenantId,
+    SyncEntityType entityType,
+    String cursor,
+  ) async {
+    await isar.writeTxn(() async {
+      var model = await isar.syncCursorModels
+          .filter()
+          .tenantIdEqualTo(tenantId)
+          .entityTypeEqualTo(entityType)
+          .findFirst();
+      model ??= SyncCursorModel()
+        ..tenantId = tenantId
+        ..entityType = entityType;
+      model
+        ..cursor = cursor
+        ..updatedAt = DateTime.now();
+      await isar.syncCursorModels.put(model);
+    });
+  }
+
+  String? _activeTenantId;
+
+  Future<void> pullAll({String? tenantId}) async {
+    _activeTenantId = tenantId;
     await pullTransactions();
     await pullBookings();
     await pullCustomers();
@@ -150,7 +182,10 @@ class PullSyncService {
     required String tableName,
     required Future<void> Function(List<Map<String, dynamic>>) upsert,
   }) async {
-    final cursor = _cursors[entityType];
+    final tenantId = _activeTenantId;
+    final cursor = tenantId != null
+        ? await _getCursor(tenantId, entityType)
+        : null;
     final queryParams = <String, String>{
       'entity_type': tableName,
       'limit': '100',
@@ -172,8 +207,8 @@ class PullSyncService {
 
     await upsert(rows);
 
-    if (data['cursor'] != null) {
-      _cursors[entityType] = data['cursor'] as String;
+    if (data['cursor'] != null && tenantId != null) {
+      await _saveCursor(tenantId, entityType, data['cursor'] as String);
     }
 
     return rows.length;

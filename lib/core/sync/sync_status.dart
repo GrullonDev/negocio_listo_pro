@@ -1,4 +1,4 @@
-enum SyncOperationState { pending, processing, completed, failed }
+enum SyncOperationState { pending, processing, completed, failed, terminal }
 
 enum SyncEntityType { transaction, booking, customer, coupon }
 

@@ -63,10 +63,36 @@ class SyncRepository {
     });
   }
 
+  static const int maxRetries = 5;
+
+  Future<void> recoverStuckOperations({
+    Duration timeout = const Duration(minutes: 5),
+  }) async {
+    final cutoff = DateTime.now().toUtc().subtract(timeout);
+    final stuck = await isar.syncOperationModels
+        .filter()
+        .stateEqualTo(SyncOperationState.processing)
+        .lastAttemptAtLessThan(cutoff)
+        .findAll();
+    if (stuck.isEmpty) return;
+    await isar.writeTxn(() async {
+      for (final op in stuck) {
+        if (op.retryCount >= maxRetries) {
+          op.state = SyncOperationState.terminal;
+        } else {
+          op.state = SyncOperationState.pending;
+        }
+        await isar.syncOperationModels.put(op);
+      }
+    });
+  }
+
   Future<void> markFailed(SyncOperationModel op, String error) async {
-    op.state = SyncOperationState.failed;
     op.retryCount += 1;
     op.lastError = error;
+    op.state = op.retryCount >= maxRetries
+        ? SyncOperationState.terminal
+        : SyncOperationState.failed;
     await isar.writeTxn(() async {
       await isar.syncOperationModels.put(op);
     });

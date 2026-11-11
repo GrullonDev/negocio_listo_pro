@@ -1,6 +1,10 @@
 import 'package:dartz/dartz.dart';
 
 import 'package:negocio_listo_pro/core/errors/failures.dart';
+import 'package:negocio_listo_pro/core/session/session_context.dart';
+import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
+import 'package:negocio_listo_pro/core/sync/sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_status.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/models/transaction_model.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/entities/financial_metrics_entity.dart';
@@ -9,8 +13,16 @@ import 'package:negocio_listo_pro/features/dashboard/domain/repositories/dashboa
 
 class DashboardRepositoryImpl implements DashboardRepository {
   final DashboardLocalDataSource localDataSource;
+  final SyncRepository syncRepository;
+  final SyncService syncService;
+  final SessionContext sessionContext;
 
-  const DashboardRepositoryImpl({required this.localDataSource});
+  const DashboardRepositoryImpl({
+    required this.localDataSource,
+    required this.syncRepository,
+    required this.syncService,
+    required this.sessionContext,
+  });
 
   @override
   Future<Either<Failure, FinancialMetricsEntity>> getMetrics() async {
@@ -51,6 +63,26 @@ class DashboardRepositoryImpl implements DashboardRepository {
       await localDataSource.addTransaction(
         TransactionModel.fromEntity(transaction),
       );
+
+      final tenantId = sessionContext.tenantId;
+      if (tenantId != null && sessionContext.isRemoteSession) {
+        await syncRepository.enqueue(
+          tenantId: tenantId,
+          entityType: SyncEntityType.transaction,
+          entityId: transaction.id,
+          operationType: SyncOperationType.create,
+          payload: {
+            'description': transaction.description,
+            'amount': transaction.amount,
+            'type': transaction.type == TransactionType.income
+                ? 'income'
+                : 'expense',
+            'occurred_at': transaction.date.toUtc().toIso8601String(),
+          },
+        );
+        syncService.triggerSync();
+      }
+
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);

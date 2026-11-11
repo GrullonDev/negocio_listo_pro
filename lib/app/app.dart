@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:negocio_listo_pro/core/branding/brand_config.dart';
 import 'package:negocio_listo_pro/core/di/injection_container.dart';
+import 'package:negocio_listo_pro/core/session/session_context.dart';
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_event.dart';
@@ -11,6 +12,7 @@ import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_state.dar
 import 'package:negocio_listo_pro/features/auth/presentation/pages/home_page.dart';
 import 'package:negocio_listo_pro/core/theme/responsive.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/pages/login_page.dart';
+import 'package:negocio_listo_pro/core/sync/presentation/sync_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -34,13 +36,31 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
+        home: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
             if (state is AuthAuthenticated) {
-              return HomePage(user: state.user);
+              sl<SessionContext>().setUser(state.user);
+            } else if (state is AuthUnauthenticated) {
+              sl<SessionContext>().clear();
             }
-            return const LoginPage();
           },
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthAuthenticated) {
+                return BlocProvider(
+                  create: (_) {
+                    final bloc = sl<SyncBloc>();
+                    if (sl<SessionContext>().isRemoteSession) {
+                      bloc.add(SyncStarted());
+                    }
+                    return bloc;
+                  },
+                  child: HomePage(user: state.user),
+                );
+              }
+              return const LoginPage();
+            },
+          ),
         ),
       ),
     );

@@ -36,3 +36,7 @@ class CouponExhaustedFailure extends Failure {
     super.message = 'El cupón alcanzó su límite de usos',
   ]);
 }
+
+class SyncFailure extends Failure {
+  const SyncFailure([super.message = 'Error durante la sincronización']);
+}

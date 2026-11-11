@@ -3,7 +3,21 @@ import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:negocio_listo_pro/core/demo/demo_seeder.dart';
+import 'package:negocio_listo_pro/core/network/api_client.dart';
+import 'package:negocio_listo_pro/core/session/session_context.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/booking_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/coupon_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/customer_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/transaction_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/presentation/sync_bloc.dart';
+import 'package:negocio_listo_pro/core/sync/pull_sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_cursor_model.dart';
+import 'package:negocio_listo_pro/core/sync/sync_operation_model.dart';
+import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
+import 'package:negocio_listo_pro/core/sync/sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_status.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:negocio_listo_pro/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/credential_model.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/tenant_model.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/user_model.dart';
@@ -14,6 +28,7 @@ import 'package:negocio_listo_pro/features/auth/domain/usecases/login_usecase.da
 import 'package:negocio_listo_pro/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:negocio_listo_pro/features/bookings/data/datasources/booking_local_datasource.dart';
+import 'package:negocio_listo_pro/features/bookings/data/datasources/booking_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/bookings/data/models/booking_model.dart';
 import 'package:negocio_listo_pro/features/bookings/data/repositories/booking_repository_impl.dart';
 import 'package:negocio_listo_pro/features/bookings/domain/repositories/booking_repository.dart';
@@ -22,6 +37,7 @@ import 'package:negocio_listo_pro/features/bookings/domain/usecases/get_bookings
 import 'package:negocio_listo_pro/features/bookings/domain/usecases/update_booking_status_usecase.dart';
 import 'package:negocio_listo_pro/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:negocio_listo_pro/features/coupons/data/datasources/coupon_local_datasource.dart';
+import 'package:negocio_listo_pro/features/coupons/data/datasources/coupon_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/coupons/data/models/coupon_model.dart';
 import 'package:negocio_listo_pro/features/coupons/data/repositories/coupon_repository_impl.dart';
 import 'package:negocio_listo_pro/features/coupons/domain/repositories/coupon_repository.dart';
@@ -30,6 +46,7 @@ import 'package:negocio_listo_pro/features/coupons/domain/usecases/get_coupons_u
 import 'package:negocio_listo_pro/features/coupons/domain/usecases/redeem_coupon_usecase.dart';
 import 'package:negocio_listo_pro/features/coupons/presentation/bloc/coupon_bloc.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/datasources/dashboard_local_datasource.dart';
+import 'package:negocio_listo_pro/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/models/transaction_model.dart';
 import 'package:negocio_listo_pro/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:negocio_listo_pro/features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -37,6 +54,7 @@ import 'package:negocio_listo_pro/features/dashboard/domain/usecases/add_transac
 import 'package:negocio_listo_pro/features/dashboard/domain/usecases/get_dashboard_metrics_usecase.dart';
 import 'package:negocio_listo_pro/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:negocio_listo_pro/features/loyalty/data/datasources/loyalty_local_datasource.dart';
+import 'package:negocio_listo_pro/features/loyalty/data/datasources/customer_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/loyalty/data/models/customer_model.dart';
 import 'package:negocio_listo_pro/features/loyalty/data/repositories/loyalty_repository_impl.dart';
 import 'package:negocio_listo_pro/features/loyalty/domain/repositories/loyalty_repository.dart';
@@ -44,11 +62,13 @@ import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_customer_
 import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_points_to_customer_usecase.dart';
 import 'package:negocio_listo_pro/features/loyalty/domain/usecases/get_customers_usecase.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
+import 'package:negocio_listo_pro/features/platform_admin/data/datasources/platform_remote_datasource.dart';
+import 'package:negocio_listo_pro/features/platform_admin/data/repositories/platform_repository_impl.dart';
+import 'package:negocio_listo_pro/features/platform_admin/domain/repositories/platform_repository.dart';
+import 'package:negocio_listo_pro/features/platform_admin/presentation/bloc/platform_admin_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
-/// Registers every dependency used by the app. Must run once, before
-/// [runApp], so Isar's directory is ready and the demo credential exists.
 Future<void> initDependencyInjection() async {
   final appDir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open([
@@ -58,23 +78,63 @@ Future<void> initDependencyInjection() async {
     BookingModelSchema,
     CustomerModelSchema,
     CouponModelSchema,
+    SyncOperationModelSchema,
+    SyncCursorModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
   await _seedDemoCredentials(isar);
   await DemoSeeder(isar).run();
 
+  // Core services
+  sl.registerSingleton<SessionContext>(SessionContext());
+  sl.registerLazySingleton<ApiClient>(() => ApiClient());
+  sl.registerLazySingleton<SyncRepository>(() => SyncRepository(sl()));
+  sl.registerLazySingleton<SyncService>(() {
+    final service = SyncService(syncRepository: sl(), apiClient: sl());
+    service.registerDispatcher(
+      SyncEntityType.transaction,
+      (op) => transactionSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.booking,
+      (op) => bookingSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.customer,
+      (op) => customerSyncDispatcher(op, sl()),
+    );
+    service.registerDispatcher(
+      SyncEntityType.coupon,
+      (op) => couponSyncDispatcher(op, sl()),
+    );
+    return service;
+  });
+  sl.registerLazySingleton<PullSyncService>(
+    () => PullSyncService(apiClient: sl(), isar: sl()),
+  );
+  sl.registerFactory<SyncBloc>(
+    () => SyncBloc(
+      syncService: sl(),
+      pullSyncService: sl(),
+      sessionContext: sl(),
+      syncRepository: sl(),
+    ),
+  );
+
+  // Auth
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(localDataSource: sl()),
   );
-
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GetCurrentSessionUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
-
   sl.registerFactory(
     () => AuthBloc(
       loginUseCase: sl(),
@@ -83,15 +143,23 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Dashboard / Transactions
   sl.registerLazySingleton<DashboardLocalDataSource>(
     () => DashboardLocalDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSourceImpl(sl()),
+  );
   sl.registerLazySingleton<DashboardRepository>(
-    () => DashboardRepositoryImpl(localDataSource: sl()),
+    () => DashboardRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetDashboardMetricsUseCase(sl()));
   sl.registerLazySingleton(() => AddTransactionUseCase(sl()));
-
   sl.registerFactory(
     () => DashboardBloc(
       getDashboardMetricsUseCase: sl(),
@@ -99,16 +167,24 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Bookings
   sl.registerLazySingleton<BookingLocalDataSource>(
     () => BookingLocalDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(sl()),
+  );
   sl.registerLazySingleton<BookingRepository>(
-    () => BookingRepositoryImpl(localDataSource: sl()),
+    () => BookingRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetBookingsUseCase(sl()));
   sl.registerLazySingleton(() => AddBookingUseCase(sl()));
   sl.registerLazySingleton(() => UpdateBookingStatusUseCase(sl()));
-
   sl.registerFactory(
     () => BookingBloc(
       getBookingsUseCase: sl(),
@@ -117,16 +193,24 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Loyalty / Customers
   sl.registerLazySingleton<LoyaltyLocalDataSource>(
     () => LoyaltyLocalDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<CustomerRemoteDataSource>(
+    () => CustomerRemoteDataSourceImpl(sl()),
+  );
   sl.registerLazySingleton<LoyaltyRepository>(
-    () => LoyaltyRepositoryImpl(localDataSource: sl()),
+    () => LoyaltyRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetCustomersUseCase(sl()));
   sl.registerLazySingleton(() => AddCustomerUseCase(sl()));
   sl.registerLazySingleton(() => AddPointsToCustomerUseCase(sl()));
-
   sl.registerFactory(
     () => LoyaltyBloc(
       getCustomersUseCase: sl(),
@@ -135,16 +219,24 @@ Future<void> initDependencyInjection() async {
     ),
   );
 
+  // Coupons
   sl.registerLazySingleton<CouponLocalDataSource>(
     () => CouponLocalDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<CouponRemoteDataSource>(
+    () => CouponRemoteDataSourceImpl(sl()),
+  );
   sl.registerLazySingleton<CouponRepository>(
-    () => CouponRepositoryImpl(localDataSource: sl()),
+    () => CouponRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+      sessionContext: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetCouponsUseCase(sl()));
   sl.registerLazySingleton(() => CreateCouponUseCase(sl()));
   sl.registerLazySingleton(() => RedeemCouponUseCase(sl()));
-
   sl.registerFactory(
     () => CouponBloc(
       getCouponsUseCase: sl(),
@@ -152,10 +244,19 @@ Future<void> initDependencyInjection() async {
       redeemCouponUseCase: sl(),
     ),
   );
+
+  // Platform Admin
+  sl.registerLazySingleton<PlatformRemoteDataSource>(
+    () => PlatformRemoteDataSource(),
+  );
+  sl.registerLazySingleton<PlatformRepository>(
+    () => PlatformRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerFactory(
+    () => PlatformAdminBloc(repository: sl()),
+  );
 }
 
-/// Ensures the offline demo accounts always exist so login works without
-/// a manual seed step. Each entry is only inserted if its email is absent.
 Future<void> _seedDemoCredentials(Isar isar) async {
   await _seedCredentialIfAbsent(
     isar,

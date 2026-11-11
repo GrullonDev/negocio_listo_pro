@@ -7,6 +7,9 @@ import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_bloc.dart
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_event.dart';
 import 'package:negocio_listo_pro/core/theme/app_theme.dart';
 import 'package:negocio_listo_pro/features/auth/presentation/bloc/auth_state.dart';
+import 'package:negocio_listo_pro/features/platform_admin/presentation/pages/platform_login_page.dart';
+import 'package:negocio_listo_pro/core/di/injection_container.dart';
+import 'package:negocio_listo_pro/features/platform_admin/presentation/bloc/platform_admin_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -103,6 +106,25 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text('Ingresar'),
                         );
                       },
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => BlocProvider(
+                              create: (_) => sl<PlatformAdminBloc>(),
+                              child: const PlatformLoginPage(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Administración Global',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
                     ),
                   ],
                 ),

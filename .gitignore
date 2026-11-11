@@ -48,6 +48,10 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
+# Backend
+backend/.env
+backend/.dart_frog/
+
 # DevTools local settings
 devtools_options.yaml
 
@@ -60,3 +64,10 @@ pubspec.lock
 /macos/
 /windows/
 /web/
+
+# Isar test artifacts
+*.isar-lck
+*.isar
+libisar.dll
+libisar.so
+libisar.dylib

@@ -62,6 +62,10 @@ import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_customer_
 import 'package:negocio_listo_pro/features/loyalty/domain/usecases/add_points_to_customer_usecase.dart';
 import 'package:negocio_listo_pro/features/loyalty/domain/usecases/get_customers_usecase.dart';
 import 'package:negocio_listo_pro/features/loyalty/presentation/bloc/loyalty_bloc.dart';
+import 'package:negocio_listo_pro/features/platform_admin/data/datasources/platform_remote_datasource.dart';
+import 'package:negocio_listo_pro/features/platform_admin/data/repositories/platform_repository_impl.dart';
+import 'package:negocio_listo_pro/features/platform_admin/domain/repositories/platform_repository.dart';
+import 'package:negocio_listo_pro/features/platform_admin/presentation/bloc/platform_admin_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -239,6 +243,17 @@ Future<void> initDependencyInjection() async {
       createCouponUseCase: sl(),
       redeemCouponUseCase: sl(),
     ),
+  );
+
+  // Platform Admin
+  sl.registerLazySingleton<PlatformRemoteDataSource>(
+    () => PlatformRemoteDataSource(),
+  );
+  sl.registerLazySingleton<PlatformRepository>(
+    () => PlatformRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerFactory(
+    () => PlatformAdminBloc(repository: sl()),
   );
 }
 

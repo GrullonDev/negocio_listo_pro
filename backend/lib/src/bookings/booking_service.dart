@@ -69,9 +69,7 @@ class BookingService {
       'client_name': row[1],
       'service': row[2],
       'start_at': (row[3] as DateTime).toIso8601String(),
-      'end_at': row[4] != null
-          ? (row[4] as DateTime).toIso8601String()
-          : null,
+      'end_at': row[4] != null ? (row[4] as DateTime).toIso8601String() : null,
       'status': row[5],
       'created_at': (row[6] as DateTime).toIso8601String(),
     };
@@ -106,9 +104,7 @@ class BookingService {
       'client_name': row[1],
       'service': row[2],
       'start_at': (row[3] as DateTime).toIso8601String(),
-      'end_at': row[4] != null
-          ? (row[4] as DateTime).toIso8601String()
-          : null,
+      'end_at': row[4] != null ? (row[4] as DateTime).toIso8601String() : null,
       'status': row[5],
       'updated_at': (row[6] as DateTime).toIso8601String(),
     };

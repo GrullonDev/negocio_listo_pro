@@ -19,7 +19,8 @@ class CustomerRemoteDataSourceImpl implements CustomerRemoteDataSource {
     final response = await apiClient.get('/api/v1/customers');
     if (!response.isSuccess) throw Exception(response.errorMessage);
 
-    final list = response.data!['data'] as List? ??
+    final list =
+        response.data!['data'] as List? ??
         (response.data is List ? response.data as List : []);
     return list.map(_fromJson).toList();
   }
@@ -28,10 +29,7 @@ class CustomerRemoteDataSourceImpl implements CustomerRemoteDataSource {
   Future<CustomerModel> addCustomer(CustomerModel customer) async {
     final response = await apiClient.post(
       '/api/v1/customers',
-      body: {
-        'name': customer.name,
-        'phone': customer.phone,
-      },
+      body: {'name': customer.name, 'phone': customer.phone},
     );
     if (!response.isSuccess) throw Exception(response.errorMessage);
     return customer;

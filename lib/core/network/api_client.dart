@@ -8,7 +8,7 @@ class ApiClient {
   static const _baseUrlKey = 'API_BASE_URL';
   static const _defaultBaseUrl = 'http://10.0.2.2:8080';
 
-  static final String baseUrl = const String.fromEnvironment(
+  static const String baseUrl = String.fromEnvironment(
     _baseUrlKey,
     defaultValue: _defaultBaseUrl,
   );
@@ -16,11 +16,9 @@ class ApiClient {
   final http.Client _client;
   final FlutterSecureStorage _storage;
 
-  ApiClient({
-    http.Client? client,
-    FlutterSecureStorage? storage,
-  })  : _client = client ?? http.Client(),
-        _storage = storage ?? const FlutterSecureStorage();
+  ApiClient({http.Client? client, FlutterSecureStorage? storage})
+    : _client = client ?? http.Client(),
+      _storage = storage ?? const FlutterSecureStorage();
 
   Future<String?> get accessToken => _storage.read(key: 'access_token');
 
@@ -51,10 +49,7 @@ class ApiClient {
 
   Future<ApiResponse> get(String path) async {
     try {
-      final response = await _client.get(
-        _uri(path),
-        headers: await _headers(),
-      );
+      final response = await _client.get(_uri(path), headers: await _headers());
       return ApiResponse.fromHttp(response);
     } on SocketException {
       return ApiResponse.offline();
@@ -131,9 +126,6 @@ class ApiResponse {
   }
 
   factory ApiResponse.error(String message) {
-    return ApiResponse._(
-      isSuccess: false,
-      errorMessage: message,
-    );
+    return ApiResponse._(isSuccess: false, errorMessage: message);
   }
 }

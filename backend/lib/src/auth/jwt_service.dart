@@ -18,14 +18,11 @@ class JwtService {
   JwtService._();
 
   static String generateAccessToken(JwtPayload payload) {
-    final jwt = JWT(
-      {
-        'sub': payload.userId,
-        'tid': payload.tenantId,
-        'role': payload.role,
-      },
-      issuer: 'negociolisto-backend',
-    );
+    final jwt = JWT({
+      'sub': payload.userId,
+      'tid': payload.tenantId,
+      'role': payload.role,
+    }, issuer: 'negociolisto-backend');
     return jwt.sign(
       SecretKey(Env.jwtSecret),
       expiresIn: Duration(minutes: Env.jwtAccessExpiryMinutes),
@@ -33,15 +30,12 @@ class JwtService {
   }
 
   static String generateRefreshToken(JwtPayload payload) {
-    final jwt = JWT(
-      {
-        'sub': payload.userId,
-        'tid': payload.tenantId,
-        'role': payload.role,
-        'type': 'refresh',
-      },
-      issuer: 'negociolisto-backend',
-    );
+    final jwt = JWT({
+      'sub': payload.userId,
+      'tid': payload.tenantId,
+      'role': payload.role,
+      'type': 'refresh',
+    }, issuer: 'negociolisto-backend');
     return jwt.sign(
       SecretKey(Env.jwtSecret),
       expiresIn: Duration(days: Env.jwtRefreshExpiryDays),

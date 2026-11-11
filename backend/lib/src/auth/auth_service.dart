@@ -65,12 +65,7 @@ class AuthService {
     );
 
     return {
-      'user': {
-        'id': row[0],
-        'name': row[1],
-        'email': row[2],
-        'role': row[3],
-      },
+      'user': {'id': row[0], 'name': row[1], 'email': row[2], 'role': row[3]},
       'tenant': {
         'id': row[4],
         'name': row[5],
@@ -112,12 +107,7 @@ class AuthService {
     );
 
     return {
-      'user': {
-        'id': row[0],
-        'name': row[1],
-        'email': row[2],
-        'role': row[3],
-      },
+      'user': {'id': row[0], 'name': row[1], 'email': row[2], 'role': row[3]},
       'tenant': {
         'id': row[5],
         'name': row[6],
@@ -148,12 +138,7 @@ class AuthService {
     if (results.isEmpty) return null;
     final row = results.first;
     return {
-      'user': {
-        'id': row[0],
-        'name': row[1],
-        'email': row[2],
-        'role': row[3],
-      },
+      'user': {'id': row[0], 'name': row[1], 'email': row[2], 'role': row[3]},
       'tenant': {
         'id': row[4],
         'name': row[5],

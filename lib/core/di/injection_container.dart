@@ -4,6 +4,12 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:negocio_listo_pro/core/demo/demo_seeder.dart';
 import 'package:negocio_listo_pro/core/network/api_client.dart';
+import 'package:negocio_listo_pro/core/sync/dispatchers/transaction_sync_dispatcher.dart';
+import 'package:negocio_listo_pro/core/sync/pull_sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_operation_model.dart';
+import 'package:negocio_listo_pro/core/sync/sync_repository.dart';
+import 'package:negocio_listo_pro/core/sync/sync_service.dart';
+import 'package:negocio_listo_pro/core/sync/sync_status.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:negocio_listo_pro/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:negocio_listo_pro/features/auth/data/models/credential_model.dart';
@@ -64,6 +70,7 @@ Future<void> initDependencyInjection() async {
     BookingModelSchema,
     CustomerModelSchema,
     CouponModelSchema,
+    SyncOperationModelSchema,
   ], directory: appDir.path);
   sl.registerSingleton<Isar>(isar);
 
@@ -71,6 +78,18 @@ Future<void> initDependencyInjection() async {
   await DemoSeeder(isar).run();
 
   sl.registerLazySingleton<ApiClient>(() => ApiClient());
+  sl.registerLazySingleton<SyncRepository>(() => SyncRepository(sl()));
+  sl.registerLazySingleton<SyncService>(() {
+    final service = SyncService(syncRepository: sl(), apiClient: sl());
+    service.registerDispatcher(
+      SyncEntityType.transaction,
+      (op) => transactionSyncDispatcher(op, sl()),
+    );
+    return service;
+  });
+  sl.registerLazySingleton<PullSyncService>(
+    () => PullSyncService(apiClient: sl(), isar: sl()),
+  );
 
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(sl()),
@@ -101,7 +120,11 @@ Future<void> initDependencyInjection() async {
     () => DashboardRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<DashboardRepository>(
-    () => DashboardRepositoryImpl(localDataSource: sl()),
+    () => DashboardRepositoryImpl(
+      localDataSource: sl(),
+      syncRepository: sl(),
+      syncService: sl(),
+    ),
   );
   sl.registerLazySingleton(() => GetDashboardMetricsUseCase(sl()));
   sl.registerLazySingleton(() => AddTransactionUseCase(sl()));

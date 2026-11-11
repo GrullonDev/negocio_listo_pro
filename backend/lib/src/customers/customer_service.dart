@@ -127,11 +127,6 @@ class CustomerService {
 
     if (results.isEmpty) return null;
     final row = results.first;
-    return {
-      'id': row[0],
-      'name': row[1],
-      'points': row[2],
-      'tier': row[3],
-    };
+    return {'id': row[0], 'name': row[1], 'points': row[2], 'tier': row[3]};
   }
 }

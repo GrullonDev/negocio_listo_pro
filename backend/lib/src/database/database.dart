@@ -25,7 +25,7 @@ class Database {
           password: Env.databasePassword,
         ),
       ],
-      settings: PoolSettings(
+      settings: const PoolSettings(
         maxConnectionCount: 10,
         sslMode: SslMode.disable,
       ),

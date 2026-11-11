@@ -4,10 +4,8 @@ import 'package:dart_frog/dart_frog.dart';
 
 import 'package:backend/src/auth/auth_service.dart';
 import 'package:backend/src/bookings/booking_service.dart';
-import 'package:backend/src/config/env.dart';
 import 'package:backend/src/coupons/coupon_service.dart';
 import 'package:backend/src/customers/customer_service.dart';
-import 'package:backend/src/database/database.dart';
 import 'package:backend/src/transactions/transaction_service.dart';
 
 Handler middleware(Handler handler) {

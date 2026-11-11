@@ -15,20 +15,16 @@ class Env {
     }
   }
 
-  static String get databaseHost =>
-      _dotenv['DATABASE_HOST'] ?? 'localhost';
+  static String get databaseHost => _dotenv['DATABASE_HOST'] ?? 'localhost';
 
-  static int get databasePort =>
-      int.parse(_dotenv['DATABASE_PORT'] ?? '5432');
+  static int get databasePort => int.parse(_dotenv['DATABASE_PORT'] ?? '5432');
 
   static String get databaseName =>
       _dotenv['DATABASE_NAME'] ?? 'negociolisto_dev';
 
-  static String get databaseUser =>
-      _dotenv['DATABASE_USER'] ?? 'negociolisto';
+  static String get databaseUser => _dotenv['DATABASE_USER'] ?? 'negociolisto';
 
-  static String get databasePassword =>
-      _dotenv['DATABASE_PASSWORD'] ?? '';
+  static String get databasePassword => _dotenv['DATABASE_PASSWORD'] ?? '';
 
   static String get jwtSecret =>
       _dotenv['JWT_SECRET'] ?? 'dev-secret-change-me';

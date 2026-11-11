@@ -18,7 +18,8 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     final response = await apiClient.get('/api/v1/transactions');
     if (!response.isSuccess) throw Exception(response.errorMessage);
 
-    final list = response.data!['data'] as List? ??
+    final list =
+        response.data!['data'] as List? ??
         (response.data is List ? response.data as List : []);
     return list.map((item) {
       final json = item as Map<String, dynamic>;

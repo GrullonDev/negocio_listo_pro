@@ -36,4 +36,15 @@ class Env {
       int.parse(_dotenv['JWT_REFRESH_EXPIRY_DAYS'] ?? '7');
 
   static int get port => int.parse(_dotenv['PORT'] ?? '8080');
+
+  static bool get bootstrapSuperAdmin =>
+      (_dotenv['BOOTSTRAP_SUPER_ADMIN'] ?? 'false').toLowerCase() == 'true';
+
+  static String get superAdminName =>
+      _dotenv['SUPER_ADMIN_NAME'] ?? 'Global Administrator';
+
+  static String get superAdminEmail =>
+      _dotenv['SUPER_ADMIN_EMAIL'] ?? 'admin@negociolisto.local';
+
+  static String? get superAdminPassword => _dotenv['SUPER_ADMIN_PASSWORD'];
 }

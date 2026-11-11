@@ -38,13 +38,14 @@ class Env {
   static int get port => int.parse(_dotenv['PORT'] ?? '8080');
 
   static bool get bootstrapSuperAdmin =>
-      (_dotenv['BOOTSTRAP_SUPER_ADMIN'] ?? 'false').toLowerCase() == 'true';
+      (_dotenv['BOOTSTRAP_SUPER_ADMIN'] ?? 'true').toLowerCase() == 'true';
 
   static String get superAdminName =>
       _dotenv['SUPER_ADMIN_NAME'] ?? 'Global Administrator';
 
   static String get superAdminEmail =>
-      _dotenv['SUPER_ADMIN_EMAIL'] ?? 'admin@negociolisto.local';
+      _dotenv['SUPER_ADMIN_EMAIL'] ?? 'admin@admin.com';
 
-  static String? get superAdminPassword => _dotenv['SUPER_ADMIN_PASSWORD'];
+  static String? get superAdminPassword =>
+      _dotenv['SUPER_ADMIN_PASSWORD'] ?? 'admin123';
 }
